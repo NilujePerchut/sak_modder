@@ -1,100 +1,25 @@
-model,price
-Baker's Knife,
-Golfer Special,
-Waiter Plus,
-American Eagle,
-Compact,
-DofE Pocket Tool,
-Engineer,
-Golfer,
-Lumberjack Big,
-McKinley,
-Scientist,
-Spartan,
-Special Mechanic,
-Standard,
-TimeKeeper,
-TimeKeeper Alarm,
-Tinker,
-Weekender,
-Battle of Morgarten,
-Battle of Laupen,
-Battle of Sempach,
-Battle of Nafels,
-Battle of St. Jakob,
-Battle of Murten,
-Altimeter,
-Automobile,
-Automobile Special,
-Camper,
-Climber,
-Companion,
-Clipper,
-Cybertool S (29),
-FASS 90,
-Hiker,
-Mechanic,
-Oath of Rutli,
-Passenger,
-Picnicker,
-Spartan Lite,
-Super Tinker,
-Trail Guide,
-Traveller,
-Voyager,
-Wild Turkey,
-Yeoman,
-Altimeter Plus,
-Angler,
-Bass Fishing,
-CampFlame,
-Climber Lite,
-Cybertool M (34),
-CyberYeoman,
-Deluxe Climber,
-Deluxe Tinker,
-Explorer,
-Fieldmaster,
-Fisherman,
-Grand Prix,
-Huntsman,
-Master Electrician,
-Master Gardener,
-Mountaineer,
-SwissFlame,
-Traveller Lite,
-Voyager Lite,
-Whitetail Deer,
-Woodsman,
-Yeoman Mechanic,
-Angler Plus,
-Barista Tool,
-Deluxe Angler / Waterman,
-Fisherman Plus,
-Handyman 7236maU,
-Huntsman Lite,
-Luxury Automobile,
-Master Craftsman,
-Master Fisherman,
-Modeler,
-Motorist,
-Mountaineer Lite,
-Outdoorsman-Original,
-Ranger,
-Troubleshooter,
-Champion A,
-Champion B,
-Craftsman,
-Expedition Lite,
-Handyman,
-Outdoorsman,
-Champion C,
-Champion Plus,
-Cybertool L (41),
-Cybertool Lite,
-SwissChamp,
-SwissChamp XL,
-SwissChamp XLT,
-SwissChamp XAVT,
-SwissChamp XXL,
-SwissChamp XXLT,
+model,price_usd,price_chf,price_eur,victorinox_id,fetched_at
+Waiter Plus,23.0,17.0,18.0,0.3303,2026-09-27
+Compact,59.0,45.0,47.0,1.3405,2026-09-27
+Spartan,34.0,25.0,27.0,1.3603,2026-09-27
+Tinker,34.0,25.0,27.0,1.4603,2026-09-27
+Camper,39.0,33.0,35.0,1.3613,2026-09-27
+Climber,45.0,37.0,39.0,1.3703,2026-09-27
+Companion,48.0,43.0,45.0,1.3909,2026-09-27
+Hiker,39.0,33.0,35.0,1.4613,2026-09-27
+Super Tinker,45.0,37.0,39.0,1.4703,2026-09-27
+Angler,,49.0,51.0,1.3653.72,2026-09-27
+Cybertool M (34),,99.0,109.0,1.7725.T,2026-09-27
+Deluxe Tinker,68.0,55.0,59.0,1.4723,2026-09-27
+Explorer,65.0,55.0,59.0,1.6703,2026-09-27
+Fieldmaster,52.0,43.0,45.0,1.4713,2026-09-27
+Fisherman,55.0,43.0,45.0,1.4733.72,2026-09-27
+Huntsman,52.0,43.0,45.0,1.3713,2026-09-27
+Mountaineer,60.0,45.0,47.0,1.3743,2026-09-27
+Barista Tool,145.0,,,1.5924.LMA,2026-09-27
+Huntsman Lite,,79.0,85.0,1.7915.T,2026-09-27
+Ranger,75.0,59.0,65.0,1.3763,2026-09-27
+Handyman,98.0,75.0,79.0,1.3773,2026-09-27
+Cybertool L (41),140.0,119.0,129.0,1.7775.T,2026-09-27
+SwissChamp,115.0,95.0,99.0,1.6795,2026-09-27
+SwissChamp XXL,,349.0,379.0,1.6795.XXL,2026-09-27

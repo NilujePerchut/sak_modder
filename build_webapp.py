@@ -102,18 +102,55 @@ for s in SLOT_IDS:
     SLOT_SPECS[SLOT_KEYS[s]] = LAYER_SPECS.get(key, {"mm": None, "g": None})
 
 # ------------------------------------------------------- model prices (optional)
-# victorinox_91mm_model_prices.csv: model,price (EUR or any consistent unit).
-# Rows with an empty price fall back to a layer-count weight proxy.
-PRICES = {}
+# victorinox_91mm_model_prices.csv: model,price_usd,price_chf,price_eur,
+# victorinox_id,fetched_at — official prices scraped from victorinox.com
+# (fetch_prices.py). A missing currency column falls back to conversion via
+# the exchange-rate CSV; a fully missing row falls back to a layer-count proxy.
+PRICES = {}          # model -> {USD, CHF, EUR} (native prices, may be partial)
 _prices_path = f"{WS}/victorinox_91mm_model_prices.csv"
 if os.path.exists(_prices_path):
     with open(_prices_path, encoding="utf-8") as f:
         for r in csv.DictReader(f):
-            if r.get("model") and r.get("price", "").strip():
+            if not r.get("model"):
+                continue
+            entry = {}
+            for cur in ("usd", "chf", "eur"):
+                v = (r.get(f"price_{cur}") or "").strip()
+                if v:
+                    try:
+                        entry[cur.upper()] = float(v)
+                    except ValueError:
+                        pass
+            if entry:
+                PRICES[r["model"]] = entry
+
+# ------------------------------------------- exchange rates (optional, CHF base)
+# victorinox_exchange_rates.csv: base,quote,rate,date — written by fetch_prices.py
+# companion run or manually. Used to convert a native price to the display
+# currency when the model has no price published in that currency.
+RATES = {}           # quote currency -> rate per 1 CHF
+RATES_DATE = ""
+_rates_path = f"{WS}/victorinox_exchange_rates.csv"
+if os.path.exists(_rates_path):
+    with open(_rates_path, encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            if r.get("base") == "CHF" and r.get("quote") and r.get("rate"):
                 try:
-                    PRICES[r["model"]] = float(r["price"])
+                    RATES[r["quote"]] = float(r["rate"])
+                    RATES_DATE = r.get("date", "")
                 except ValueError:
                     pass
+RATES["CHF"] = 1.0
+PRICES_FETCHED_AT = ""
+VX_IDS = {}
+if os.path.exists(_prices_path):
+    with open(_prices_path, encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            dates = [d for d in (r.get("fetched_at") or "").split(";") if d]
+            if dates and not PRICES_FETCHED_AT:
+                PRICES_FETCHED_AT = max(dates)
+            if r.get("model") and r.get("victorinox_id"):
+                VX_IDS[r["model"]] = r["victorinox_id"]
 
 # ------------------------------------------------- model availability (retired)
 # victorinox_91mm_model_availability.csv: model,retired,source
@@ -232,6 +269,8 @@ main { display:grid; grid-template-columns: 320px 1fr 340px; gap:14px; padding:1
 #shopPanel .total { border-top:1px solid var(--line); margin-top:4px; padding:6px 12px 8px; display:flex; justify-content:space-between; font-size:13px; font-weight:700; }
 #shopPanel .hint { padding:10px 12px 12px; font-size:12.5px; color:var(--dim); }
 #shopPanel .alt { border:none; background:none; color:var(--accent); font-size:11.5px; cursor:pointer; padding:2px 12px 8px; text-decoration:underline; }
+#shopPanel #liveWrap { display:flex; align-items:center; gap:6px; font-size:12.5px; font-weight:600; padding:6px 10px; border:1px solid var(--line); border-radius:7px; background:var(--input); cursor:pointer; }
+#shopPanel #shopNote { border-top:1px dashed var(--line); margin-top:4px; }
 footer { text-align:center; color:var(--dim); font-size:11px; padding:8px; }
 header #themeBtn { margin-left:auto; padding:5px 12px; border:1px solid rgba(255,255,255,.5); background:rgba(255,255,255,.12); color:#fff; border-radius:8px; cursor:pointer; font-size:12.5px; font-weight:600; }
 header #themeBtn:hover { background:rgba(255,255,255,.22); }
@@ -304,7 +343,18 @@ header #themeBtn:hover { background:rgba(255,255,255,.22); }
     </div>
     <div class="panel" id="shopPanel" style="margin-top:14px">
       <h2>Shopping List</h2>
+      <div class="toolbar" style="padding-top:10px">
+        <select id="currencySelect" title="Display currency">
+          <option value="EUR">EUR \u20ac</option>
+          <option value="USD">USD $</option>
+          <option value="CHF">CHF</option>
+        </select>
+        <label id="liveWrap" title="Fetch current prices and exchange rates from victorinox.com and frankfurter.app while online">
+          <input type="checkbox" id="liveChk"> live
+        </label>
+      </div>
       <div id="shopList"></div>
+      <div id="shopNote" class="hint"></div>
     </div>
   </section>
 </main>
@@ -324,7 +374,12 @@ const MODELS = __MODELS_JSON__;
 const MODELS_LAYERS = __MODELS_LAYERS_JSON__;
 const SLOT_SPECS = __SLOT_SPECS_JSON__;
 const PRICES = __PRICES_JSON__;
+const RATES = __RATES_JSON__;
+const RATES_DATE = __RATES_DATE_JSON__;
 const RETIRED = __RETIRED_JSON__;
+let CURRENCY = "EUR";   // display currency for the shopping list
+let PRICES_FETCHED_AT = __PRICES_FETCHED_AT_JSON__;   // date of the embedded price snapshot
+let liveRates = null;    // when set: {USD, EUR, ...} live rates per 1 CHF
 
 // ================== constants ==================
 const CAT = {
@@ -780,14 +835,40 @@ function renderStats() {
       <span class="k">Weight</span><span class="v">${known ? g.toFixed(0) : "≈ " + g.toFixed(0)}</span><span class="u">g</span></div>
     <div class="stat"><span class="k">Layers</span><span class="v">${nL}</span><span class="u">/</span></div>`;
 }
+// ================== prices & currency ==================
+// Effective rates per 1 CHF for the display currency (live rates take
+// priority over the CSV snapshot embedded at build time).
+function rateOf(cur) {
+  if (liveRates && liveRates[cur] !== undefined) return liveRates[cur];
+  if (RATES[cur] !== undefined) return RATES[cur];
+  return null;
+}
+// Price of a model in the display currency. Native price preferred; otherwise
+// converted from another currency with the exchange rates. null = no data.
+function priceOf(name) {
+  const p = PRICES[name];
+  if (!p) return null;
+  if (p[CURRENCY] !== undefined) return p[CURRENCY];
+  for (const cur of Object.keys(p)) {
+    const rFrom = rateOf(cur);
+    const rTo = rateOf(CURRENCY);
+    if (rFrom && rTo) return p[cur] / rFrom * rTo;
+  }
+  return null;
+}
 // ================== shopping list ==================
-// Cost of a donor model: the user price if provided, otherwise a layer-count
-// proxy (a rough monotone scale: 1 layer = 10, + 3 per extra layer).
+// Cost of a donor model: the official Victorinox price (possibly converted to
+// the display currency) if available, otherwise a layer-count proxy (a rough
+// monotone scale: 1 layer = 10, + 3 per extra layer).
 function modelCost(name) {
-  if (PRICES[name] !== undefined) return PRICES[name];
+  const p = priceOf(name);
+  if (p !== null) return p;
   const lay = MODELS_LAYERS[name];
   const n = Object.keys(lay).filter(k => k !== "order").length;
   return 10 + 3 * (n - 1);
+}
+function pricedModelsUseProxy(names) {
+  return names.filter(n => priceOf(n) === null);
 }
 // k-th cheapest solutions of the set-cover DP: state = subset of required
 // layer slots still uncovered. Each model can be bought at most once (one
@@ -857,19 +938,19 @@ function renderShoppingList() {
       .map(r => SLOTS.find(x => x.id === r.slot).label);
     return { name, take };
   });
+  const sym = { EUR: "\u20ac", USD: "$", CHF: "CHF " }[CURRENCY];
   for (const it of items) {
     const d = document.createElement("div");
     d.className = "item";
-    const price = PRICES[it.name] !== undefined ? PRICES[it.name].toFixed(2) : "n/a";
+    const p = priceOf(it.name);
     d.innerHTML = `<span><b>${it.name}</b><div class="take">take: ${it.take.join(", ")}</div></span>
-      <span class="price">${price}${PRICES[it.name] !== undefined ? " €" : ""}</span>`;
+      <span class="price">${p !== null ? sym + p.toFixed(2) : "no price"}</span>`;
     box.appendChild(d);
   }
   const tot = document.createElement("div");
   tot.className = "total";
-  const priced = names.every(n => PRICES[n] !== undefined);
-  tot.innerHTML = `<span>Total — ${names.length} knife${names.length!==1?"s":""}</span>
-    <span>${priced ? sols[0].cost.toFixed(2) + " €" : "no price data"}</span>`;
+  tot.innerHTML = `<span>Total \u2014 ${names.length} knife${names.length!==1?"s":""}${pricedModelsUseProxy(names).length ? " *" : ""}</span>
+    <span>${sym}${sols[0].cost.toFixed(2)}</span>`;
   box.appendChild(tot);
   if (sols.length > 1) {
     const alt = document.createElement("button");
@@ -878,13 +959,94 @@ function renderShoppingList() {
     alt.onclick = () => {
       let h = "";
       for (const s of sols) {
-        h += `<div class="item"><span>${s.knives.join(" + ")}</span><span class="price">${s.cost.toFixed(1)}</span></div>`;
+        h += `<div class="item"><span>${s.knives.join(" + ")}</span><span class="price">${{ EUR: "\u20ac", USD: "$", CHF: "CHF " }[CURRENCY]}${s.cost.toFixed(2)}</span></div>`;
       }
       box.innerHTML = h + `<button class="alt" onclick="renderShoppingList()">⬅ back</button>`;
     };
     box.appendChild(alt);
   }
+  renderShopNote(names);
 }
+function renderShopNote(names) {
+  const note = document.getElementById("shopNote");
+  const unpriced = names ? pricedModelsUseProxy(names) : [];
+  const ratesSrc = liveRates ? "live exchange rates (frankfurter.app)" : `exchange rates of ${RATES_DATE || "n/a"} (CSV snapshot)`;
+  note.innerHTML =
+    `Official Victorinox prices (victorinox.com), ${livePrices ? "fetched live" : `fetched on ${PRICES_FETCHED_AT || "n/a"}`}. ` +
+    `Amounts in ${CURRENCY} use ${ratesSrc}. ` +
+    (unpriced.length ? `* No price found for ${unpriced.join(", ")} \u2014 a layer-count proxy stands in, so totals involving them are estimates.` : "");
+}
+// ================== live prices & rates ==================
+let livePrices = null;      // fetched from victorinox.com when the box is checked
+const VX_API = "https://b2cstore-victorinox.frontastic.live/frontastic/data-source/products/list";
+const VX_IDS = __VX_IDS_JSON__;
+const VX_LOCALES = { USD: "en_US", CHF: "de_CH", EUR: "de_DE" };
+async function fetchLiveRates() {
+  const r = await fetch("https://api.frankfurter.app/latest?from=CHF&to=USD,EUR");
+  const d = await r.json();
+  liveRates = { CHF: 1, USD: d.rates.USD, EUR: d.rates.EUR };
+}
+async function fetchLivePrices() {
+  const need = {};
+  for (const [model, id] of Object.entries(VX_IDS)) {
+    if (RETIRED.includes(model)) continue;
+    need[id] = true;
+  }
+  const out = { USD: {}, CHF: {}, EUR: {} };
+  for (const cur of Object.keys(VX_LOCALES)) {
+    let start = 0;
+    while (start < 1200) {
+      const r = await fetch(`${VX_API}?startFrom=${start}&maxResults=100`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Frontastic-Locale": VX_LOCALES[cur] },
+        body: JSON.stringify({ maxResults: 100 }),
+      });
+      const d = await r.json();
+      const docs = (((d.dataSourcePayload || {}).data || {}).response || {}).docs || [];
+      if (!docs.length) break;
+      for (const doc of docs) {
+        const c = doc.commerce;
+        if (!c || !c.id || !need[c.id]) continue;
+        const fv = (c.price || {}).formattedValue;
+        const m = fv && fv.match(/[\d]+(?:[.,]\d+)?/);
+        if (m) out[cur][c.id] = parseFloat(m[0].replace(",", "."));
+      }
+      start += 100;
+    }
+  }
+  for (const [model, id] of Object.entries(VX_IDS)) {
+    for (const cur of Object.keys(out)) {
+      if (out[cur][id] !== undefined) {
+        (PRICES[model] = PRICES[model] || {})[cur] = out[cur][id];
+      }
+    }
+  }
+  livePrices = out;
+}
+let liveBusy = false;
+async function ensureLive() {
+  if (liveBusy || (livePrices && liveRates)) return;
+  liveBusy = true;
+  document.getElementById("shopNote").textContent = "Fetching live prices and exchange rates\u2026";
+  try {
+    await Promise.all([fetchLiveRates(), fetchLivePrices()]);
+    PRICES_FETCHED_AT = new Date().toISOString().slice(0, 10);
+  } catch (err) {
+    document.getElementById("shopNote").textContent = "Live fetch failed (offline or blocked) \u2014 using embedded prices.";
+  }
+  liveBusy = false;
+}
+const liveChk = document.getElementById("liveChk");
+const currencySelect = document.getElementById("currencySelect");
+currencySelect.onchange = async () => {
+  CURRENCY = currencySelect.value;
+  if (liveChk.checked) await ensureLive();
+  renderShoppingList();
+};
+liveChk.onchange = async () => {
+  if (liveChk.checked) await ensureLive();
+  renderShoppingList();
+};
 function renderAll() { renderPalette(); renderCandidates(); renderKnife(); renderMatches(); renderStats(); renderShoppingList(); }
 renderAll();
 </script>
@@ -906,6 +1068,10 @@ html = (HTML
         .replace("__MODELS_LAYERS_JSON__", json.dumps(models_layers))
         .replace("__SLOT_SPECS_JSON__", json.dumps(SLOT_SPECS))
         .replace("__PRICES_JSON__", json.dumps(PRICES))
+        .replace("__RATES_JSON__", json.dumps(RATES))
+        .replace("__RATES_DATE_JSON__", json.dumps(RATES_DATE))
+        .replace("__PRICES_FETCHED_AT_JSON__", json.dumps(PRICES_FETCHED_AT))
+        .replace("__VX_IDS_JSON__", json.dumps(VX_IDS))
         .replace("__RETIRED_JSON__", json.dumps(sorted(RETIRED)))
         .replace("__MODEL_COUNT__", str(len(MODELS)))
         .replace("__TOOL_COUNT__", str(len(TOOL_LIST)))
