@@ -183,6 +183,13 @@ M["SwissChamp XXL"] = [LB, SB, SE, BO, CO, CT, CS, RA, SC, HOOK, PL, WS, MS, FS,
 M["SwissChamp XXLT"] = [LB, SB, SE, BO, CO, CT, CS, RA, SC, HOOK, PL, WS, MS, FS, MG, PI, FIN, CH, SP, EB, PR, BD, BL, WCO, KR]
 
 
+LAYER_ORDER = {
+    # Physical stacking order (top/blade side first), verified on real knives.
+    # Models not listed here use the standard LAYER_SLOTS order.
+    "Cybertool M (34)": ["blades", "scissors", "pliers", "cyber", "openers"],
+}
+
+
 def assign_layers(model, tools):
     """Assign tools to the canonical physical layers for one model."""
     layers = OrderedDict((key, []) for key, _ in LAYER_SLOTS)
@@ -285,12 +292,29 @@ def assign_layers(model, tools):
 
 import os
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "victorinox_91mm_model_layers.csv")
+def _slot_id(key):
+    label = dict(LAYER_SLOTS)[key]
+    s = label.lower().replace("'", "").replace("(", "").replace(")", "").replace("/", " ")
+    return "_".join(s.split())
+
+
+def _order_string(model, layers):
+    present = [key for key, _ in LAYER_SLOTS if layers[key]]
+    explicit = model in LAYER_ORDER
+    order = LAYER_ORDER[model] if explicit else [key for key, _ in LAYER_SLOTS]
+    if explicit:
+        missing = [k for k in present if k not in order]
+        if missing:
+            raise ValueError(f"{model}: LAYER_ORDER omits present layers {missing}")
+    return ",".join(_slot_id(k) for k in order if k in present)
+
+
 with open(OUT, "w", newline="", encoding="utf-8") as f:
     w = csv.writer(f)
-    w.writerow(["model"] + [label for _, label in LAYER_SLOTS])
+    w.writerow(["model"] + [label for _, label in LAYER_SLOTS] + ["layer_order"])
     for model, tools in M.items():
         layers = assign_layers(model, tools)
-        w.writerow([model] + [" + ".join(layers[key]) for key, _ in LAYER_SLOTS])
+        w.writerow([model] + [" + ".join(layers[key]) for key, _ in LAYER_SLOTS] + [_order_string(model, layers)])
 
 # sanity checks
 errors = []

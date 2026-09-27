@@ -31,7 +31,7 @@ for r in matrix_rows:
 
 with open(f"{WS}/victorinox_91mm_model_layers.csv", encoding="utf-8") as f:
     layer_rows = list(csv.DictReader(f))
-SLOT_IDS = [k for k in layer_rows[0].keys() if k != "model"]
+SLOT_IDS = [k for k in layer_rows[0].keys() if k not in ("model", "layer_order")]
 
 def _slug(label):
     s = label.lower().replace("'", "").replace("(", "").replace(")", "").replace("/", " ")
@@ -76,6 +76,8 @@ for r in layer_rows:
                     if frozenset(v["tools"]) == tset), None)
         assert idx is not None, f"no archetype found for {r['model']} slot {slot}: {sorted(tset)}"
         mlay[SLOT_KEYS[slot]] = idx
+    order = [s for s in (r.get("layer_order") or "").split(",") if s]
+    mlay["order"] = order
     models_layers[r["model"]] = mlay
 
 # ---------------------------------------------------------------- verify data
@@ -413,8 +415,10 @@ function loadModel(name) {
   for (const k of Object.keys(build)) delete build[k];
   layerOrder = [];
   for (const s of SLOTS) {
-    if (lay[s.id] !== undefined) { build[s.id] = lay[s.id]; layerOrder.push(s.id); }
+    if (lay[s.id] !== undefined) build[s.id] = lay[s.id];
   }
+  layerOrder = (lay.order && lay.order.length ? lay.order : SLOTS.map(s => s.id))
+    .filter(id => build[id] !== undefined);
   selectedTool = null; candSlotFocus = null;
   renderAll();
 }
