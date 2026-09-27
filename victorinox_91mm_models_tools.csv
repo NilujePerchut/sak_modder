@@ -1,0 +1,100 @@
+model,Large Blade,Large Blade (Serrated),Small Blade,Pruning Blade,Electrician's Blade,Cap-lifter / Bottle Opener,Can Opener,Combo Tool,Box Opener,Nail File,Wood Saw,Metal Saw / File,Scissors,Pliers,Fish Scaler,Magnifying Glass,Phillips Screwdriver (Inline),Technician's Screwdriver,Bit Driver,LED Light,Butane Lighter,Pharmaceutical Spatula,Divot Tool,Watch Case Opener,Universal Wrench,Sight Adjustment Tools,Coffee Spatula,Steam Wand Nozzle Remover,Corkscrew,Phillips Screwdriver (Backspring),Reamer / Awl,Multipurpose Hook,Fine Screwdriver,Chisel,Long Nail File,Keyring
+Baker's Knife,X,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,X
+Golfer Special,X,,,,,,,,,,,,,,,,,,,,,,X,,,,,,X,,,,,,,X
+Waiter Plus,X,,,,,,,X,,,,,,,,,,,,,,,,,,,,,X,,,,,,,X
+American Eagle,X,,X,,,X,X,,,,,,,,,,,,,,,,,,,,,,,X,,,X,,,X
+Compact,X,,,,,,,X,,,,,X,,,,,,,,,,,,,,,,X,,,X,,,,X
+DofE Pocket Tool,X,,,,,,,X,,,,,X,,,,,,,,,,,,,,,,,X,,X,,,,X
+Engineer,X,,,,,,,,,,,,,,,X,X,X,,,,,,,,,,,X,,,,,,,X
+Golfer,X,,,,,,,X,,,,,X,,,,,,,,,,,,,,,,X,,,,,,,X
+Lumberjack Big,X,,,,,,,X,,,X,,,,,,,,,,,,,,,,,,X,,,,,,,X
+McKinley,X,,X,,,X,X,,,,,,,,,,,,,,,,,,,,,,,X,X,,,,,X
+Scientist,X,,,,,,,X,,,,,,,,X,X,,,,,,,,,,,,X,,,,,,,X
+Spartan,X,,X,,,X,X,,,,,,,,,,,,,,,,,,,,,,X,,X,,,,,X
+Special Mechanic,X,,,,,,,X,,,,,,X,,,,,,,,,,,,,,,,X,,,,,,X
+Standard,X,,X,,,X,X,,,,,,,,,,,,,,,,,,,,,,X,,X,,,,,X
+TimeKeeper,X,,,,,,,X,,,,,X,,,,,,,,,,,,,,,,X,,,X,,,,X
+TimeKeeper Alarm,X,,X,,,X,X,,,,,,,,,,,,,,,,,,,,,,,X,X,,,,,X
+Tinker,X,,X,,,X,X,,,,,,,,,,,,,,,,,,,,,,,X,X,,,,,X
+Weekender,,X,X,,,X,X,,,,,,,,,,,,,,,,,,,,,,X,,X,,,,,X
+Battle of Morgarten,X,,X,,,X,X,,,,,,,,,,,,,,,,,,,,,,X,,X,,,,,X
+Battle of Laupen,X,,X,,,X,X,,,,X,,,,,,,,,,,,,,,,,,X,,X,,,,,X
+Battle of Sempach,X,,X,,,X,X,,,,,,X,,,,,,,,,,,,,,,,X,,X,,,,,X
+Battle of Nafels,X,,X,,,X,X,,,,X,,X,,,,,,,,,,,,,,,,X,,X,,,,,X
+Battle of St. Jakob,X,,X,,,X,X,,,,,,,,,X,X,,,,,,,,,,,,X,,X,,,,,X
+Battle of Murten,X,,X,,,X,X,,,,,,,,X,,,,,,,,,,,,,,X,,X,,,,,X
+Altimeter,X,,X,,,X,X,,,,,,X,,,,,,,,,,,,,,,,X,,X,X,,,,X
+Automobile,X,,,,,X,X,,,,,X,,,,,,X,,,,,,,,,,,,X,X,,,,,X
+Automobile Special,X,,X,,,X,X,,,,,X,,,,,,,,,,,,,,,,,,X,X,,,,,X
+Camper,X,,X,,,X,X,,,,X,,,,,,,,,,,,,,,,,,X,,X,,,,,X
+Climber,X,,X,,,X,X,,,,,,X,,,,,,,,,,,,,,,,X,,X,X,,,,X
+Companion,X,,,,,X,,,X,X,,,X,,,,,,,,,,,,,,,,X,,X,X,,,,X
+Clipper,X,,X,,,X,X,,,,,X,,,,,,,,,,,,,,,,,X,,X,,,,,X
+Cybertool S (29),X,,X,,,X,X,,,,,,,,,,,,X,,,,,,,,,,X,,X,,,,,X
+FASS 90,X,,X,,,X,X,,,,,,,,,,,,,,,,,,,X,,,X,,X,,,,,X
+Hiker,X,,X,,,X,X,,,,X,,,,,,,,,,,,,,,,,,,X,X,,,,,X
+Mechanic,X,,X,,,X,X,,,,,,,X,,,,,,,,,,,,,,,,X,X,,,,,X
+Oath of Rutli,X,,X,,,X,X,,,,,,,X,,,,,,,,,,,,,,,X,,X,,,,,X
+Passenger,X,,X,,,X,X,,,,,,,,,X,X,,,,,,,,,,,,X,,X,,,,,X
+Picnicker,,X,,X,,X,X,,,,X,,,,,,,,,,,,,,,,,,X,,X,,,,,X
+Spartan Lite,X,,X,,,X,X,,,,,,,,,,X,,,X,,,,,,,,,X,,X,,,,,X
+Super Tinker,X,,X,,,X,X,,,,,,X,,,,,,,,,,,,,,,,,X,X,X,,,,X
+Trail Guide,X,,,,,,,X,,,,X,X,,,,,,,,,,,,,,,,X,,,X,,,,X
+Traveller,X,,X,,,X,X,,,,,,X,,,,,,,,,,,,,,,,X,,X,X,,,,X
+Voyager,X,,X,,,X,X,,,,,,X,,,,,,,,,,,,,,,,X,,X,X,,,,X
+Wild Turkey,X,,X,,,X,X,,,,X,,,,,,,,,,,,,,,,,,,X,,,X,,,X
+Yeoman,X,,,,,,,X,,,,,X,,,X,X,,,,,,,,,,,,X,,,X,,,,X
+Altimeter Plus,X,,X,,,X,X,,,,X,,X,,,,,,,,,,,,,,,,X,,X,X,X,,,X
+Angler,X,,X,,,X,X,,,,,,,X,X,,,,,,,,,,,,,,X,,X,,,,,X
+Bass Fishing,X,,X,,,X,X,,,,,,,X,X,,,,,,,,,,,,,,,X,,,X,,,X
+CampFlame,X,,X,,,X,X,,,,X,,,,,,,,,,X,,,,,,,,X,,X,,X,,,X
+Climber Lite,X,,X,,,X,X,,,,,,X,,,,X,,,X,,,,,,,,,X,,X,X,,,,X
+Cybertool M (34),X,,X,,,X,X,,,,,,X,X,,,,,X,,,,,,,,,,X,,X,X,,,,X
+CyberYeoman,X,,,,,,,X,,,,,X,,,X,X,,X,,,,,,,,,,X,,,X,,,,X
+Deluxe Climber,X,,X,,,X,X,,,,,,X,X,,,,,,,,,,,,,,,X,,X,X,,,,X
+Deluxe Tinker,X,,X,,,X,X,,,,,,X,X,,,,,,,,,,,,,,,,X,X,X,,,,X
+Explorer,X,,X,,,X,X,,,,,,X,,,X,X,,,,,,,,,,,,X,,X,X,,,,X
+Fieldmaster,X,,X,,,X,X,,,,X,,X,,,,,,,,,,,,,,,,,X,X,X,,,,X
+Fisherman,X,,X,,,X,X,,,,,,X,,X,,,,,,,,,,,,,,,X,X,X,,,,X
+Grand Prix,X,,X,,,X,X,,,,,X,X,,,,,,,,,,,,,,,,,X,X,X,X,,,X
+Huntsman,X,,X,,,X,X,,,,X,,X,,,,,,,,,,,,,,,,X,,X,X,,,,X
+Master Electrician,X,,,,X,X,X,,,,,,,X,,,X,,,X,,,,,,,,,,X,,,X,,,X
+Master Gardener,X,,,X,,X,X,,,,X,,,,,,X,,,X,,,,,,,,,,X,X,,,,,X
+Mountaineer,X,,X,,,X,X,,,,,X,X,,,,,,,,,,,,,,,,X,,X,X,,,,X
+SwissFlame,X,,X,,,X,X,,,,,,X,,,,,,,,X,,,,,,,,X,,X,X,,,,X
+Traveller Lite,X,,X,,,X,X,,,,,,X,,,,X,,,X,,,,,,,,,X,,X,X,,,,X
+Voyager Lite,X,,X,,,X,X,,,,,,X,,,,X,,,X,,,,,,,,,X,,X,X,,,,X
+Whitetail Deer,X,,X,,,X,X,,,,X,,,,,,X,,,X,,,,,,,,,,X,,,X,,,X
+Woodsman,X,,X,,,X,X,,,,X,,X,,,X,X,,,,,,,,,,,,X,,X,X,X,,,X
+Yeoman Mechanic,X,,,,,,,X,,,,,X,X,,X,X,,,,,,,,,,,,X,,,X,,,,X
+Angler Plus,X,,X,,,X,X,,,,X,,,X,X,,,,,,,,,,,,,,X,,X,,,,,X
+Barista Tool,X,,X,,,X,X,,,,,,,X,,,X,,,,,,,,,,X,X,X,,X,,,,,X
+Deluxe Angler / Waterman,X,,X,,,X,X,,,,,,X,X,X,,,,,,,,,,,,,,X,,X,X,,,,X
+Fisherman Plus,X,,X,,,X,X,,,,X,,X,,X,,,,,,,,,,,,,,,X,X,X,,,,X
+Handyman 7236maU,X,,,,,X,X,,,,X,X,X,,,,,X,,,,,,,,,,,X,,X,,,,,X
+Huntsman Lite,X,,X,,,X,X,,,,X,,X,,,,X,,,X,,,,,,,,,X,,X,X,X,,,X
+Luxury Automobile,X,,,,,X,X,,,,X,X,X,,,,,X,,,,,,,,,,,,X,X,,,,X,X
+Master Craftsman,X,,X,,,X,X,,,,X,X,X,,,,,,,,,,,,,,,,,X,X,X,X,X,,X
+Master Fisherman,X,,X,,,X,X,,,,,,X,X,X,,,,,,,,,,,,,,,X,X,,,,,X
+Modeler,X,,X,,,X,X,,,,,X,X,,,X,X,,,,,,,,,,,,X,,X,,,,,X
+Motorist,X,,X,,,X,X,,,,X,,X,X,,,,,,,,,,,,,,,X,,X,X,X,,,X
+Mountaineer Lite,X,,X,,,X,X,,,,,X,X,,,,X,,,X,,,,,,,,,X,,X,X,,X,,X
+Outdoorsman-Original,,X,,X,,X,X,,,,X,X,X,,,,,,,,,,,,,,,,X,,X,,,,,X
+Ranger,X,,X,,,X,X,,,,X,X,X,,,,,,,,,,,,,,,,X,,X,X,X,X,,X
+Troubleshooter,X,,X,,,X,X,,,,,X,X,X,,,,,,,,,,,,,,,,X,X,X,,X,,X
+Champion A,X,,X,,,X,X,,,,X,X,X,,X,,,,,,,,,,,,,,X,,X,,,,X,X
+Champion B,X,,X,,,X,X,,,,X,X,X,,X,,,,,,,,,,,,,,,X,X,,,,X,X
+Craftsman,X,,X,,,X,X,,,,X,X,X,X,,,,,,,,,,,,,,,,X,X,X,X,X,,X
+Expedition Lite,X,,X,,,X,X,,,,X,X,X,,,,X,,,X,,,,,,,,,X,,X,X,X,X,,X
+Handyman,X,,X,,,X,X,,,,X,X,X,X,,,,,,,,,,,,,,,X,,X,X,X,X,,X
+Outdoorsman,X,,X,,,X,X,,,,X,,X,,X,X,X,,,,,,,,,,,,X,,X,X,X,,,X
+Champion C,X,,X,,,X,X,,,,X,X,X,,X,X,X,,,,,,,,,,,,X,,X,X,X,X,,X
+Champion Plus,X,,X,,,X,X,,,,X,X,X,,X,X,X,,,,,,,,,,,,X,,X,X,X,X,,X
+Cybertool L (41),X,,X,,,X,X,,,,X,X,X,X,,,,,X,,,,,,,,,,X,,X,X,X,X,,X
+Cybertool Lite,X,,X,,,X,X,,,,,,X,X,,X,,,X,X,,,,,,,,,X,,X,X,,,,X
+SwissChamp,X,,X,,,X,X,,,,X,X,X,X,X,X,X,,,,,,,,,,,,X,,X,X,X,X,,X
+SwissChamp XL,X,,X,X,X,X,X,,,,X,X,X,X,X,X,X,,,,,X,X,,,,,,X,,X,X,X,X,,X
+SwissChamp XLT,X,,X,X,X,X,X,,,,X,X,X,X,X,X,X,,X,,,X,,,,,,,X,,X,X,X,X,,X
+SwissChamp XAVT,X,X,X,X,X,X,X,X,,,X,X,X,X,X,X,X,,X,X,,X,,X,X,,,,X,,X,X,X,X,,X
+SwissChamp XXL,X,X,X,X,X,X,X,X,,,X,X,X,X,X,X,X,,X,X,,X,,X,X,,,,X,,X,X,X,X,,X
+SwissChamp XXLT,X,X,X,X,X,X,X,X,,,X,X,X,X,X,X,X,,X,,X,X,,X,,,,,X,,X,X,X,X,,X
