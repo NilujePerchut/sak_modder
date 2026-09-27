@@ -5,6 +5,7 @@ Reads:
   - victorinox_91mm_tools.csv          (tool, location, description)
   - victorinox_91mm_models_tools.csv   (model x tool matrix)
   - victorinox_91mm_model_layers.csv    (model -> layer slot -> tools)
+  - victorinox_91mm_layer_specs.csv     (layer -> thickness & weight)
 
 Derives the observed layer configurations ("archetypes") per slot across the 99
 reference models, and injects everything as JSON into a static HTML app that
@@ -80,6 +81,26 @@ for r in layer_rows:
     mlay["order"] = order
     models_layers[r["model"]] = mlay
 
+# ------------------------------------------------------- per-layer specs (mm/g)
+with open(f"{WS}/victorinox_91mm_layer_specs.csv", encoding="utf-8") as f:
+    spec_rows = list(csv.DictReader(f))
+LAYER_SPECS = {}
+for r in spec_rows:
+    key = _slug(r["layer"])
+    LAYER_SPECS[key] = {
+        "mm": float(r["thickness_mm"]) if r["thickness_mm"].strip() else None,
+        "g": float(r["weight_g"]) if r["weight_g"].strip() else None,
+    }
+# slot label -> spec row label where slugs differ
+SPEC_KEY_ALIASES = {
+    "Blade layer": "blade_layer_incl._scales_&_rivets",
+}
+SLOT_SPECS = {}
+for s in SLOT_IDS:
+    key = SPEC_KEY_ALIASES.get(s, SLOT_KEYS[s])
+    # unused slots (no reference model) may have no measured spec: mark unknown
+    SLOT_SPECS[SLOT_KEYS[s]] = LAYER_SPECS.get(key, {"mm": None, "g": None})
+
 # ---------------------------------------------------------------- verify data
 toolset_union = set().union(*MODELS.values())
 unknown = toolset_union - set(TOOL_LIST)
@@ -145,6 +166,11 @@ main { display:grid; grid-template-columns: 320px 1fr 340px; gap:14px; padding:1
 .pvHead button:hover { border-color:var(--accent); color:var(--accent); }
 #knifeWrap svg { width:100%; height:auto; }
 #status { text-align:center; font-size:13px; padding:6px 0 2px; color:var(--dim); min-height:20px; }
+#stackStats { display:flex; justify-content:center; gap:10px; padding:8px 0 0; flex-wrap:wrap; }
+#stackStats .stat { display:inline-flex; align-items:baseline; gap:5px; background:#fff; border:1px solid var(--line); border-radius:8px; padding:4px 12px; }
+#stackStats .stat .k { font-size:10.5px; color:var(--dim); text-transform:uppercase; letter-spacing:.6px; font-weight:700; }
+#stackStats .stat .v { font-size:15px; font-weight:700; color:var(--ink); }
+#stackStats .stat .u { font-size:11px; color:var(--dim); }
 #status.warn { color:var(--accent); font-weight:600; }
 /* ------- build state ------- */
 .toolbar { display:flex; gap:8px; padding:8px 12px 2px; }
@@ -193,6 +219,7 @@ footer { text-align:center; color:var(--dim); font-size:11px; padding:8px; }
           <svg id="backSvg" viewBox="0 0 420 300"></svg>
         </div>
       </div>
+      <div id="stackStats"></div>
       <div id="status"></div>
     </div>
   </section>
@@ -228,6 +255,7 @@ const SLOTS = __SLOTS_JSON__;
 const ARCHETYPES = __ARCHETYPES_JSON__;
 const MODELS = __MODELS_JSON__;
 const MODELS_LAYERS = __MODELS_LAYERS_JSON__;
+const SLOT_SPECS = __SLOT_SPECS_JSON__;
 
 // ================== constants ==================
 const CAT = {
@@ -543,7 +571,25 @@ document.addEventListener("click", e => {
   if (!e.target.isConnected) return;   // detached by our own re-render: ignore
   panel.style.display = "none"; candSlotFocus = null;
 });
-function renderAll() { renderPalette(); renderCandidates(); renderKnife(); renderMatches(); }
+function renderStats() {
+  const box = document.getElementById("stackStats");
+  let mm = 0, g = 0, known = true;
+  const nL = Object.keys(build).length;
+  for (const slotId in build) {
+    const sp = SLOT_SPECS[slotId];
+    if (!sp) { known = false; continue; }
+    if (sp.mm !== null) mm += sp.mm; else known = false;
+    if (sp.g !== null) g += sp.g; else known = false;
+  }
+  if (!nL) { box.innerHTML = ""; return; }
+  box.innerHTML = `
+    <div class="stat" title="Sum of the per-layer thickness (blade layer includes scales & rivets)">
+      <span class="k">Thickness</span><span class="v">${known ? mm.toFixed(1) : "≥ " + mm.toFixed(1)}</span><span class="u">mm</span></div>
+    <div class="stat" title="Sum of the per-layer weights (blade layer includes scales & rivets)">
+      <span class="k">Weight</span><span class="v">${known ? g.toFixed(0) : "≈ " + g.toFixed(0)}</span><span class="u">g</span></div>
+    <div class="stat"><span class="k">Layers</span><span class="v">${nL}</span><span class="u">/</span></div>`;
+}
+function renderAll() { renderPalette(); renderCandidates(); renderKnife(); renderMatches(); renderStats(); }
 renderAll();
 </script>
 </body>
@@ -562,6 +608,7 @@ html = (HTML
         .replace("__ARCHETYPES_JSON__", json.dumps(ARCHETYPES))
         .replace("__MODELS_JSON__", json.dumps({m: sorted(t) for m, t in MODELS.items()}))
         .replace("__MODELS_LAYERS_JSON__", json.dumps(models_layers))
+        .replace("__SLOT_SPECS_JSON__", json.dumps(SLOT_SPECS))
         .replace("__MODEL_COUNT__", str(len(MODELS)))
         .replace("__TOOL_COUNT__", str(len(TOOL_LIST)))
         .replace("__ARCH_COUNT__", str(sum(len(v) for v in ARCHETYPES.values()))))
