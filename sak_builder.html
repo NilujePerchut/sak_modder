@@ -148,7 +148,10 @@ header #themeBtn:hover { background:rgba(255,255,255,.22); }
       <h2>Layers</h2>
       <div class="toolbar">
         <select id="modelSelect"><option value="">Load layers from a model…</option></select>
+        <button id="exportBtn" title="Download the current stackup as JSON">⬇ Export</button>
+        <button id="importBtn" title="Load a stackup from a JSON file">⬁ Import</button>
         <button id="clearBtn" title="Remove all layers">Clear</button>
+        <input type="file" id="importFile" accept="application/json,.json" style="display:none">
       </div>
     </div>
     <div class="panel" style="margin-top:14px">
@@ -593,6 +596,54 @@ document.getElementById("clearBtn").onclick = () => {
   for (const k of Object.keys(build)) delete build[k];
   layerOrder = [];
   renderAll();
+};
+// ================== export / import stackup ==================
+document.getElementById("exportBtn").onclick = () => {
+  const layers = {};
+  for (const slotId in build) layers[slotId] = ARCHETYPES[slotId][build[slotId]].tools;
+  const payload = {
+    format: "sak_modder_stackup",
+    version: 1,
+    exported_at: new Date().toISOString(),
+    layers,
+    order: layerOrder.filter(id => build[id] !== undefined),
+    tools: [...builtTools()].sort(),
+  };
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" }));
+  a.download = "sak_stackup.json";
+  a.click();
+  URL.revokeObjectURL(a.href);
+};
+const importFile = document.getElementById("importFile");
+document.getElementById("importBtn").onclick = () => importFile.click();
+importFile.onchange = () => {
+  const file = importFile.files && importFile.files[0];
+  importFile.value = "";
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    let data;
+    try { data = JSON.parse(reader.result); } catch (err) { alert("Invalid JSON file"); return; }
+    if (!data || typeof data !== "object" || typeof data.layers !== "object") {
+      alert("Not a sak_modder stackup file (missing \"layers\")");
+      return;
+    }
+    for (const k of Object.keys(build)) delete build[k];
+    layerOrder = [];
+    const order = Array.isArray(data.order) ? data.order : [];
+    const added = [];
+    for (const slotId of Object.keys(data.layers)) {
+      if (!(slotId in ARCHETYPES)) continue;
+      const idx = ARCHETYPES[slotId].findIndex(a => JSON.stringify(a.tools) === JSON.stringify(data.layers[slotId]));
+      if (idx >= 0) { build[slotId] = idx; added.push(slotId); }
+    }
+    layerOrder = order.filter(id => added.includes(id));
+    for (const id of added) if (!layerOrder.includes(id)) layerOrder.push(id);
+    selectedTool = null; candSlotFocus = null;
+    renderAll();
+  };
+  reader.readAsText(file);
 };
 const modelSelect = document.getElementById("modelSelect");
 for (const name of Object.keys(MODELS).sort((a,b) => a.localeCompare(b))) {
