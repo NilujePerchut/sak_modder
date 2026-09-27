@@ -345,7 +345,7 @@ header #themeBtn:hover { background:rgba(255,255,255,.22); }
       <h2>Shopping List</h2>
       <div class="toolbar" style="padding-top:10px">
         <select id="currencySelect" title="Display currency">
-          <option value="EUR">EUR \u20ac</option>
+          <option value="EUR">EUR €</option>
           <option value="USD">USD $</option>
           <option value="CHF">CHF</option>
         </select>
@@ -938,7 +938,7 @@ function renderShoppingList() {
       .map(r => SLOTS.find(x => x.id === r.slot).label);
     return { name, take };
   });
-  const sym = { EUR: "\u20ac", USD: "$", CHF: "CHF " }[CURRENCY];
+  const sym = { EUR: "€", USD: "$", CHF: "CHF " }[CURRENCY];
   for (const it of items) {
     const d = document.createElement("div");
     d.className = "item";
@@ -959,7 +959,7 @@ function renderShoppingList() {
     alt.onclick = () => {
       let h = "";
       for (const s of sols) {
-        h += `<div class="item"><span>${s.knives.join(" + ")}</span><span class="price">${{ EUR: "\u20ac", USD: "$", CHF: "CHF " }[CURRENCY]}${s.cost.toFixed(2)}</span></div>`;
+        h += `<div class="item"><span>${s.knives.join(" + ")}</span><span class="price">${{ EUR: "€", USD: "$", CHF: "CHF " }[CURRENCY]}${s.cost.toFixed(2)}</span></div>`;
       }
       box.innerHTML = h + `<button class="alt" onclick="renderShoppingList()">⬅ back</button>`;
     };
