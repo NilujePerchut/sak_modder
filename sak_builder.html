@@ -81,9 +81,6 @@ main { display:grid; grid-template-columns: 320px 1fr 340px; gap:14px; padding:1
 .match:hover { background:var(--hover); }
 .match .pct { color:var(--dim); font-weight:600; }
 .match.exact { background:var(--exact-bg); font-weight:700; }
-#exportBtns { display:flex; gap:8px; padding:0 12px 12px; }
-#exportBtns button { flex:1; padding:7px; border:1px solid var(--line); background:var(--input); color:var(--ink); border-radius:7px; cursor:pointer; font-size:12.5px; font-weight:600; }
-#exportBtns button:hover { border-color:var(--accent); background:var(--hover-accent); }
 #shopPanel .item { display:flex; justify-content:space-between; align-items:baseline; font-size:13px; padding:5px 12px; }
 #shopPanel .item .take { font-size:11px; color:var(--dim); }
 #shopPanel .price { font-weight:700; }
@@ -157,10 +154,6 @@ header #themeBtn:hover { background:rgba(255,255,255,.22); }
     <div class="panel" style="margin-top:14px">
       <h2>Matching Models</h2>
       <div id="matches"></div>
-      <div id="exportBtns">
-        <button id="dlJson">⬇ Build JSON</button>
-        <button id="dlCsv">⬇ Build CSV</button>
-      </div>
     </div>
     <div class="panel" id="shopPanel" style="margin-top:14px">
       <h2>Shopping List</h2>
@@ -478,23 +471,6 @@ function renderMatches() {
 }
 
 // ================== export ==================
-function download(name, text, type) {
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(new Blob([text], {type}));
-  a.download = name; a.click(); URL.revokeObjectURL(a.href);
-}
-document.getElementById("dlJson").onclick = () => {
-  const layers = {};
-  for (const slotId in build) layers[slotId] = ARCHETYPES[slotId][build[slotId]].tools;
-  download("custom_sak.json", JSON.stringify({ layers, order: layerOrder.filter(id => build[id] !== undefined), tools: [...builtTools()].sort() }, null, 2), "application/json");
-};
-document.getElementById("dlCsv").onclick = () => {
-  const mine = [...builtTools()].sort();
-  const lines = ["tool,location,in_build"];
-  for (const t of TOOLS) lines.push(`"${t}",${TOOL_INFO[t].location},${mine.includes(t)?"X":""}`);
-  download("custom_sak.csv", lines.join("\n"), "text/csv");
-};
-
 // ================== theme ==================
 const THEMES = ["auto", "light", "dark"];
 const themeBtn = document.getElementById("themeBtn");
