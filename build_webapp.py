@@ -150,6 +150,18 @@ HTML = r"""<!DOCTYPE html>
 :root {
   --bg:#f4f1ec; --panel:#fffdf8; --line:#d8d2c6; --ink:#2b2620; --dim:#7a7263;
   --red:#d43518; --accent:#b3451f; --ok:#3d7a3d; --sel:#f0e0c0;
+  --input:#ffffff; --hover:#f7f2e6; --hover-accent:#fffaf0; --exact-bg:#e4efe4;
+  --band:#efe9dc; --band-line:#b7ad98; --band-ctl:#ffffff; --band-ctl-line:#c4b9a4;
+  --band-text:#9a8f79; --keyring:#555555;
+  color-scheme:light;
+}
+html[data-theme="dark"] {
+  --bg:#191614; --panel:#211d1a; --line:#3d362f; --ink:#e9e3d8; --dim:#a79d8d;
+  --red:#a92a17; --accent:#d98a5f; --ok:#5a9a5a; --sel:#4a3a24;
+  --input:#2a2521; --hover:#2c2722; --hover-accent:#332b24; --exact-bg:#24322a;
+  --band:#2b2622; --band-line:#4a443c; --band-ctl:#35302a; --band-ctl-line:#57503f;
+  --band-text:#8f8574; --keyring:#9a948a;
+  color-scheme:dark;
 }
 * { box-sizing:border-box; }
 body { margin:0; font:14px/1.45 "Segoe UI",system-ui,sans-serif; background:var(--bg); color:var(--ink); }
@@ -161,10 +173,10 @@ main { display:grid; grid-template-columns: 320px 1fr 340px; gap:14px; padding:1
 .panel h2 { font-size:13px; text-transform:uppercase; letter-spacing:.8px; color:var(--dim); margin:0; padding:10px 12px 6px; border-bottom:1px solid var(--line); }
 /* ------- tool palette ------- */
 #palette .search { padding:8px 10px; position:sticky; top:0; background:var(--panel); }
-#palette input { width:100%; padding:7px 10px; border:1px solid var(--line); border-radius:7px; font-size:13px; background:#fff; }
+#palette input { width:100%; padding:7px 10px; border:1px solid var(--line); border-radius:7px; font-size:13px; background:var(--input); color:var(--ink); }
 #toolList { max-height:calc(100vh - 170px); overflow-y:auto; padding:6px; }
 .tool-item { display:flex; align-items:center; gap:9px; padding:7px 8px; border-radius:8px; cursor:pointer; border:1px solid transparent; }
-.tool-item:hover { background:#f7f2e6; }
+.tool-item:hover { background:var(--hover); }
 .tool-item.selected { background:var(--sel); border-color:var(--accent); }
 .tool-ico { width:30px; height:30px; border-radius:7px; display:flex; align-items:center; justify-content:center; font-size:16px; color:#fff; flex:none; }
 .tool-name { font-weight:600; font-size:13px; }
@@ -176,8 +188,8 @@ main { display:grid; grid-template-columns: 320px 1fr 340px; gap:14px; padding:1
 .hint { color:var(--dim); font-size:13px; padding:16px 12px; }
 .slot-group { margin-bottom:12px; }
 .slot-group h3 { margin:0 0 6px; font-size:12px; color:var(--accent); text-transform:uppercase; letter-spacing:.6px; }
-.card { display:flex; align-items:center; gap:10px; width:100%; text-align:left; background:#fff; border:1px solid var(--line); border-radius:9px; padding:9px 11px; margin-bottom:6px; cursor:pointer; transition:all .12s; }
-.card:hover { border-color:var(--accent); background:#fffaf0; transform:translateX(2px); }
+.card { display:flex; align-items:center; gap:10px; width:100%; text-align:left; background:var(--input); color:var(--ink); border:1px solid var(--line); border-radius:9px; padding:9px 11px; margin-bottom:6px; cursor:pointer; transition:all .12s; }
+.card:hover { border-color:var(--accent); background:var(--hover-accent); transform:translateX(2px); }
 .card .ctools { font-weight:600; font-size:13px; }
 .card .cmodels { font-size:11px; color:var(--dim); margin-top:2px; }
 .card .badge { margin-left:auto; background:var(--ok); color:#fff; font-size:11px; padding:2px 9px; border-radius:10px; flex:none; }
@@ -187,12 +199,12 @@ main { display:grid; grid-template-columns: 320px 1fr 340px; gap:14px; padding:1
 #knifeWrap { display:flex; gap:12px; align-items:flex-start; }
 .previewCol { flex:1; min-width:0; }
 .pvHead { display:flex; align-items:center; justify-content:space-between; font-size:11px; color:var(--dim); font-weight:700; text-transform:uppercase; letter-spacing:.6px; padding:0 2px 4px; }
-.pvHead button { font-size:11px; padding:2px 8px; border:1px solid var(--line); background:#fff; border-radius:6px; cursor:pointer; color:var(--dim); }
+.pvHead button { font-size:11px; padding:2px 8px; border:1px solid var(--line); background:var(--input); color:var(--dim); border-radius:6px; cursor:pointer; }
 .pvHead button:hover { border-color:var(--accent); color:var(--accent); }
 #knifeWrap svg { width:100%; height:auto; }
 #status { text-align:center; font-size:13px; padding:6px 0 2px; color:var(--dim); min-height:20px; }
 #stackStats { display:flex; justify-content:center; gap:10px; padding:8px 0 0; flex-wrap:wrap; }
-#stackStats .stat { display:inline-flex; align-items:baseline; gap:5px; background:#fff; border:1px solid var(--line); border-radius:8px; padding:4px 12px; }
+#stackStats .stat { display:inline-flex; align-items:baseline; gap:5px; background:var(--input); border:1px solid var(--line); border-radius:8px; padding:4px 12px; }
 #stackStats .stat .k { font-size:10.5px; color:var(--dim); text-transform:uppercase; letter-spacing:.6px; font-weight:700; }
 #stackStats .stat .v { font-size:15px; font-weight:700; color:var(--ink); }
 #stackStats .stat .u { font-size:11px; color:var(--dim); }
@@ -200,20 +212,20 @@ main { display:grid; grid-template-columns: 320px 1fr 340px; gap:14px; padding:1
 #status.warn { color:var(--accent); font-weight:600; }
 /* ------- build state ------- */
 .toolbar { display:flex; gap:8px; padding:8px 12px 2px; }
-.toolbar select { flex:1; min-width:0; padding:6px 8px; border:1px solid var(--line); border-radius:7px; background:#fff; font-size:12.5px; }
-.toolbar button { padding:6px 12px; border:1px solid var(--line); background:#fff; border-radius:7px; cursor:pointer; font-size:12.5px; font-weight:600; }
-.toolbar button:hover { border-color:var(--accent); background:#fffaf0; }
+.toolbar select { flex:1; min-width:0; padding:6px 8px; border:1px solid var(--line); border-radius:7px; background:var(--input); color:var(--ink); font-size:12.5px; }
+.toolbar button { padding:6px 12px; border:1px solid var(--line); background:var(--input); color:var(--ink); border-radius:7px; cursor:pointer; font-size:12.5px; font-weight:600; }
+.toolbar button:hover { border-color:var(--accent); background:var(--hover-accent); }
 #buildPanel .inner { padding:10px 12px; }
 .chip { display:inline-flex; align-items:center; gap:5px; font-size:11.5px; font-weight:600; color:#fff; padding:2px 8px; border-radius:10px; }
 .chip.back { outline:1.5px solid rgba(255,255,255,.55); }
 #matches { padding:8px 12px 12px; }
 .match { display:flex; justify-content:space-between; font-size:12.5px; padding:4px 6px; border-radius:6px; }
-.match:hover { background:#f7f2e6; }
+.match:hover { background:var(--hover); }
 .match .pct { color:var(--dim); font-weight:600; }
-.match.exact { background:#e4efe4; font-weight:700; }
+.match.exact { background:var(--exact-bg); font-weight:700; }
 #exportBtns { display:flex; gap:8px; padding:0 12px 12px; }
-#exportBtns button { flex:1; padding:7px; border:1px solid var(--line); background:#fff; border-radius:7px; cursor:pointer; font-size:12.5px; font-weight:600; }
-#exportBtns button:hover { border-color:var(--accent); background:#fffaf0; }
+#exportBtns button { flex:1; padding:7px; border:1px solid var(--line); background:var(--input); color:var(--ink); border-radius:7px; cursor:pointer; font-size:12.5px; font-weight:600; }
+#exportBtns button:hover { border-color:var(--accent); background:var(--hover-accent); }
 #shopPanel .item { display:flex; justify-content:space-between; align-items:baseline; font-size:13px; padding:5px 12px; }
 #shopPanel .item .take { font-size:11px; color:var(--dim); }
 #shopPanel .price { font-weight:700; }
@@ -221,7 +233,24 @@ main { display:grid; grid-template-columns: 320px 1fr 340px; gap:14px; padding:1
 #shopPanel .hint { padding:10px 12px 12px; font-size:12.5px; color:var(--dim); }
 #shopPanel .alt { border:none; background:none; color:var(--accent); font-size:11.5px; cursor:pointer; padding:2px 12px 8px; text-decoration:underline; }
 footer { text-align:center; color:var(--dim); font-size:11px; padding:8px; }
-@media (max-width:1100px) { main { grid-template-columns:1fr; } }
+header #themeBtn { margin-left:auto; padding:5px 12px; border:1px solid rgba(255,255,255,.5); background:rgba(255,255,255,.12); color:#fff; border-radius:8px; cursor:pointer; font-size:12.5px; font-weight:600; }
+header #themeBtn:hover { background:rgba(255,255,255,.22); }
+#candidates { position:fixed; left:352px; top:64px; width:330px; z-index:50; display:none; box-shadow:0 6px 24px rgba(0,0,0,.18); }
+#frontSvg g[data-band] { cursor:grab; touch-action:none; }
+#frontSvg line#dropLine { pointer-events:none; }
+@media (max-width:1100px) {
+  main { grid-template-columns:1fr; }
+  #candidates { left:12px; right:12px; top:12px; width:auto; max-height:70vh; overflow-y:auto; }
+  #toolList { max-height:40vh; }
+}
+@media (max-width:640px) {
+  main { padding:10px; gap:10px; }
+  header { padding:8px 12px; gap:8px; }
+  header h1 { font-size:16px; }
+  header .sub { font-size:10.5px; }
+  #knifeWrap { flex-direction:column; }
+  #toolList { max-height:34vh; }
+}
 </style>
 </head>
 <body>
@@ -231,6 +260,7 @@ footer { text-align:center; color:var(--dim); font-size:11px; padding:8px; }
     <h1>91mm SAK Builder</h1>
     <div class="sub">Assemble a custom Victorinox 91mm Swiss Army Knife, layer by layer — data from SAKwiki</div>
   </div>
+  <button id="themeBtn" title="Switch theme (auto / light / dark)">◐ theme</button>
 </header>
 <main>
   <section class="panel" id="palette">
@@ -278,7 +308,7 @@ footer { text-align:center; color:var(--dim); font-size:11px; padding:8px; }
     </div>
   </section>
 </main>
-<div class="panel" id="candidates" style="position:fixed; left:352px; top:64px; width:330px; z-index:50; display:none; box-shadow:0 6px 24px rgba(0,0,0,.18)">
+<div class="panel" id="candidates">
   <h2 id="candTitle">Layer configurations</h2>
   <div class="inner" id="candBody"></div>
 </div>
@@ -339,6 +369,7 @@ const build = {};
 let layerOrder = [];   // custom display order of the filled slots (front preview controls)
 let selectedTool = null;
 let candSlotFocus = null;   // when set, candidate panel scoped to one slot
+let frontGeom = null;        // geometry of the front SVG bands, set by renderSide
 
 // ================== palette ==================
 function renderPalette() {
@@ -488,11 +519,12 @@ function renderSide(svgId, side, filled) {
   const H = Math.max(200, bodyH + 2*scaleH + 60);
   svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
   let y = (H - bodyH) / 2 - scaleH - 2;
+  let geomY0 = 0;
   let out = "";
   // top scale
-  out += `<rect x="${pad}" y="${y}" width="${W-2*pad}" height="${scaleH}" rx="6" fill="#d22318" stroke="#9e1a10"/>
+  out += `<rect x="${pad}" y="${y}" width="${W-2*pad}" height="${scaleH}" rx="6" fill="var(--red)" stroke="rgba(0,0,0,.35)"/>
           <rect x="${pad+18}" y="${y+4}" width="34" height="12" rx="2" fill="#fff" opacity=".92"/>
-          <text x="${pad+35}" y="${y+13.5}" font-size="9" text-anchor="middle" fill="#d22318" font-weight="700">✚</text>`;
+          <text x="${pad+35}" y="${y+13.5}" font-size="9" text-anchor="middle" fill="var(--red)" font-weight="700">✚</text>`;
   y += scaleH + 2;
   // layers
   const bandH = Math.min(26, (bodyH - (nL-1)*gap) / Math.max(nL,1));
@@ -504,35 +536,43 @@ function renderSide(svgId, side, filled) {
   filled.forEach((slot, i) => {
     const a = ARCHETYPES[slot.id][build[slot.id]];
     const tools = a.tools.filter(t => TOOL_INFO[t].location === (side === "front" ? "Front" : "Back"));
-    out += `<rect x="${pad}" y="${y}" width="${W-2*pad}" height="${bandH}" fill="#efe9dc" stroke="#b7ad98" rx="3"/>`;
+    if (side === "front" && i === 0) geomY0 = y;
+    let row = `<rect x="${pad}" y="${y}" width="${W-2*pad}" height="${bandH}" fill="var(--band)" stroke="var(--band-line)" rx="3"/>`;
     let x = pad + 8;
-    for (const t of tools) { out += chip(t, x); x += chipW(t) + 4; }
+    let chips = "";
+    for (const t of tools) { chips += chip(t, x); x += chipW(t) + 4; }
+    row += chips;
+    row += `<text x="${W/2}" y="${y - 1}" font-size="7.5" text-anchor="middle" fill="var(--band-text)">${slot.label}</text>`;
+    if (side === "front") out += `<g data-band="${slot.id}">${row}</g>`;
+    else out += row;
     if (side === "front") {
       // per-band controls: ✕ remove, ▼ down, ▲ up (front preview only)
       const cy = y + bandH/2;
       let bx = W - pad - 10;
-      for (const [c, glyph, col] of [["rm","✕","#b3451f"],["down","▼","#7a7263"],["up","▲","#7a7263"]]) {
+      for (const [c, glyph, col] of [["rm","✕","var(--accent)"],["down","▼","var(--dim)"],["up","▲","var(--dim)"]]) {
         out += `<g data-ctl="${c}" data-slot="${slot.id}" style="cursor:pointer">
-          <rect x="${bx-9}" y="${cy-9}" width="18" height="18" rx="4" fill="#fff" stroke="#c4b9a4"/>
+          <rect x="${bx-9}" y="${cy-9}" width="18" height="18" rx="4" fill="var(--band-ctl)" stroke="var(--band-ctl-line)"/>
           <text x="${bx}" y="${cy+3.5}" font-size="9" text-anchor="middle" fill="${col}" font-weight="700" pointer-events="none">${glyph}</text></g>`;
         bx -= 21;
       }
     }
-    out += `<text x="${W/2}" y="${y - 1}" font-size="7.5" text-anchor="middle" fill="#9a8f79">${slot.label}</text>`;
     y += bandH + gap;
   });
   if (!nL) {
-    out += `<rect x="${pad}" y="${y}" width="${W-2*pad}" height="${bodyH}" fill="#efe9dc" stroke="#b7ad98" rx="3"/>
-            <text x="${W/2}" y="${y + bodyH/2}" font-size="13" text-anchor="middle" fill="#9a8f79">no layers yet — pick a tool on the left</text>`;
+    out += `<rect x="${pad}" y="${y}" width="${W-2*pad}" height="${bodyH}" fill="var(--band)" stroke="var(--band-line)" rx="3"/>
+            <text x="${W/2}" y="${y + bodyH/2}" font-size="13" text-anchor="middle" fill="var(--band-text)">no layers yet — pick a tool on the left</text>`;
     y += bodyH;
   }
   y += 2;
   // bottom scale
-  out += `<rect x="${pad}" y="${y}" width="${W-2*pad}" height="${scaleH}" rx="6" fill="#d22318" stroke="#9e1a10"/>`;
+  out += `<rect x="${pad}" y="${y}" width="${W-2*pad}" height="${scaleH}" rx="6" fill="var(--red)" stroke="rgba(0,0,0,.35)"/>`;
   if (side === "front") {
-    out += `<circle cx="${pad+8}" cy="${y+scaleH+14}" r="8" fill="none" stroke="#555" stroke-width="2.5"/>`;
+    out += `<circle cx="${pad+8}" cy="${y+scaleH+14}" r="8" fill="none" stroke="var(--keyring)" stroke-width="2.5"/>`;
   }
   svg.innerHTML = out;
+  if (side === "front") {
+    frontGeom = { y0: geomY0, bandH, gap, W, H, pad, svg };
+  }
 }
 
 // ================== matching models ==================
@@ -578,8 +618,108 @@ document.getElementById("dlCsv").onclick = () => {
   download("custom_sak.csv", lines.join("\n"), "text/csv");
 };
 
+// ================== theme ==================
+const THEMES = ["auto", "light", "dark"];
+const themeBtn = document.getElementById("themeBtn");
+function applyTheme(mode) {
+  const dark = mode === "dark" || (mode === "auto" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+  document.documentElement.dataset.theme = dark ? "dark" : "light";
+  themeBtn.textContent = { auto: "◐ auto", light: "☀ light", dark: "☾ dark" }[mode];
+  themeBtn.dataset.mode = mode;
+  try { localStorage.setItem("sak_theme", mode); } catch (err) {}
+}
+let themeMode = "auto";
+try { themeMode = localStorage.getItem("sak_theme") || "auto"; } catch (err) {}
+applyTheme(themeMode);
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
+  if (themeBtn.dataset.mode === "auto") applyTheme("auto");
+});
+themeBtn.onclick = () => {
+  applyTheme(THEMES[(THEMES.indexOf(themeBtn.dataset.mode) + 1) % THEMES.length]);
+};
+
+// ================== drag & drop layer reorder ==================
+function dragInit(e) {
+  const band = e.target instanceof Element && e.target.closest("[data-band]");
+  if (!band) return;
+  if (e.target instanceof Element && e.target.closest("[data-ctl]")) return;
+  const g = frontGeom;
+  if (!g) return;
+  if (e.button !== undefined && e.button !== 0) return;
+  g.svg.setPointerCapture(e.pointerId);
+  const pt = svgPoint(e, g.svg);
+  const drag = { id: band.getAttribute("data-band"), svg: g.svg, moved: false, startX: pt.x, startY: pt.y };
+  const proceed = ev => {
+    if (!drag.moved) {
+      const p = svgPoint(ev, drag.svg);
+      if (Math.abs(p.y - drag.startY) < 5 && Math.abs(p.x - drag.startX) < 5) return;
+      drag.moved = true;
+      selectedTool = null; candSlotFocus = null;
+      document.getElementById("candidates").style.display = "none";
+      band.setAttribute("opacity", ".45");
+    }
+    ev.preventDefault();
+    const p = svgPoint(ev, drag.svg);
+    drag.y = p.y;
+    let line = drag.svg.querySelector("#dropLine");
+    if (!line) {
+      line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      line.id = "dropLine";
+      line.setAttribute("stroke", "var(--accent)");
+      line.setAttribute("stroke-width", "2.5");
+      drag.svg.appendChild(line);
+    }
+    const idx = dropIndex(drag.y, drag.id);
+    drag.insertAt = idx;
+    const yLine = geomYForIndex(idx, drag.id);
+    line.setAttribute("x1", g.pad); line.setAttribute("x2", g.W - g.pad);
+    line.setAttribute("y1", yLine); line.setAttribute("y2", yLine);
+    line.style.display = "";
+  };
+  const finish = () => {
+    g.svg.removeEventListener("pointermove", proceed);
+    g.svg.removeEventListener("pointerup", finish);
+    g.svg.removeEventListener("pointercancel", finish);
+    const line = g.svg.querySelector("#dropLine");
+    if (line) line.remove();
+    band.setAttribute("opacity", "");
+    if (drag.moved && drag.insertAt !== undefined) {
+      const from = layerOrder.indexOf(drag.id);
+      if (from >= 0) {
+        layerOrder.splice(from, 1);
+        layerOrder.splice(drag.insertAt, 0, drag.id);
+        renderAll();
+      }
+    }
+  };
+  g.svg.addEventListener("pointermove", proceed);
+  g.svg.addEventListener("pointerup", finish);
+  g.svg.addEventListener("pointercancel", finish);
+}
+function svgPoint(ev, svg) {
+  const r = svg.getBoundingClientRect();
+  const vb = svg.viewBox.baseVal;
+  return { x: vb.x + (ev.clientX - r.left) / r.width * vb.width, y: vb.y + (ev.clientY - r.top) / r.height * vb.height };
+}
+function dropIndex(y, draggedId) {
+  const g = frontGeom;
+  const slots = orderedSlots().map(s => s.id);
+  let above = 0;
+  for (let i = 0; i < slots.length; i++) {
+    if (slots[i] === draggedId) continue;
+    const cy = g.y0 + i * (g.bandH + g.gap) + g.bandH / 2;
+    if (y > cy) above++;
+  }
+  return above;
+}
+function geomYForIndex(idx, draggedId) {
+  const g = frontGeom;
+  return g.y0 + idx * (g.bandH + g.gap) - g.gap / 2;
+}
+
 // ================== wire up ==================
 document.getElementById("search").addEventListener("input", renderPalette);
+document.getElementById("frontSvg").addEventListener("pointerdown", dragInit);
 document.getElementById("frontSvg").addEventListener("click", e => {
   const g = e.target.closest("[data-ctl]");
   if (!g) return;
