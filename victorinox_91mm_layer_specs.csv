@@ -1,0 +1,21 @@
+layer,thickness_mm,weight_g,notes
+Blade layer (incl. scales & rivets),11.15,43.8,Includes fixed scales/rivets contribution - inseparable in SAKwiki model data
+Openers layer,2.86,18.6,Deduced from SAKwiki model totals (least squares)
+Scissors layer,3.18,21.7,Deduced from SAKwiki model totals (least squares)
+Pliers layer,4.78,38.2,Deduced from SAKwiki model totals (least squares)
+Wood saw layer,2.56,15.6,Deduced from SAKwiki model totals (least squares)
+Metal saw layer,2.71,19.9,Deduced from SAKwiki model totals (least squares)
+Magnifier layer,4.64,19.5,Deduced from SAKwiki model totals (least squares)
+Fish scaler layer,1.57,12.4,Deduced from SAKwiki model totals (least squares)
+Spatula layer,1.16,13.2,Always co-occurring pair (spatula+electrician); group value split evenly
+Electrician layer,1.16,13.2,Always co-occurring pair (spatula+electrician); group value split evenly
+Divot layer,,,"No SAKwiki data (only in SwissChamp XL, unpublished specs) - needs physical measurement"
+Cyber layer,6.24,30.9,Deduced from SAKwiki model totals (least squares)
+Lighter layer,10.37,57.7,Deduced from SAKwiki model totals (least squares)
+Combo layer (extra),4.48,26.4,Always co-occurring trio (combo+serrated+watch-case-opener); split evenly
+Serrated layer (extra),4.48,26.4,Always co-occurring trio (combo+serrated+watch-case-opener); split evenly
+Watch case opener layer,4.48,26.4,Always co-occurring trio (combo+serrated+watch-case-opener); split evenly
+Wrench layer,7.87,25.7,Deduced from SAKwiki model totals (least squares)
+Sight adjustment layer,5.49,24.8,Deduced from SAKwiki model totals (least squares)
+Coffee spatula layer,2.60,17.7,Always co-occurring pair (coffee-spatula+nozzle-remover); split evenly
+Nozzle remover layer,2.60,17.7,Always co-occurring pair (coffee-spatula+nozzle-remover); split evenly
