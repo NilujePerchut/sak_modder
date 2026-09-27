@@ -54,6 +54,7 @@ main { display:grid; grid-template-columns: 320px 1fr 340px; gap:14px; padding:1
 #stackStats .stat .k { font-size:10.5px; color:var(--dim); text-transform:uppercase; letter-spacing:.6px; font-weight:700; }
 #stackStats .stat .v { font-size:15px; font-weight:700; color:var(--ink); }
 #stackStats .stat .u { font-size:11px; color:var(--dim); }
+#statsNote { text-align:center; font-size:10.5px; color:var(--dim); padding:3px 0 0; font-style:italic; }
 #status.warn { color:var(--accent); font-weight:600; }
 /* ------- build state ------- */
 .toolbar { display:flex; gap:8px; padding:8px 12px 2px; }
@@ -103,6 +104,7 @@ footer { text-align:center; color:var(--dim); font-size:11px; padding:8px; }
         </div>
       </div>
       <div id="stackStats"></div>
+      <div id="statsNote"></div>
       <div id="status"></div>
     </div>
   </section>
@@ -422,6 +424,9 @@ document.getElementById("frontSvg").addEventListener("click", e => {
   if (!g) return;
   const slotId = g.getAttribute("data-slot");
   const ctl = g.getAttribute("data-ctl");
+  // preview controls only act on the stack: drop any pending tool selection
+  // so the layer-configuration panel does not pop up on reorder/remove
+  selectedTool = null; candSlotFocus = null;
   if (ctl === "up") moveLayer(slotId, -1);
   else if (ctl === "down") moveLayer(slotId, 1);
   else removeLayer(slotId);
@@ -464,7 +469,9 @@ function renderStats() {
     if (sp.mm !== null) mm += sp.mm; else known = false;
     if (sp.g !== null) g += sp.g; else known = false;
   }
-  if (!nL) { box.innerHTML = ""; return; }
+  const note = document.getElementById("statsNote");
+  if (!nL) { box.innerHTML = ""; note.textContent = ""; return; }
+  note.textContent = "Estimated values \u2014 deduced from SAKwiki model specifications (least squares over published model totals).";
   box.innerHTML = `
     <div class="stat" title="Sum of the per-layer thickness (blade layer includes scales & rivets)">
       <span class="k">Thickness</span><span class="v">${known ? mm.toFixed(1) : "≥ " + mm.toFixed(1)}</span><span class="u">mm</span></div>
