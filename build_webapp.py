@@ -101,6 +101,20 @@ for s in SLOT_IDS:
     # unused slots (no reference model) may have no measured spec: mark unknown
     SLOT_SPECS[SLOT_KEYS[s]] = LAYER_SPECS.get(key, {"mm": None, "g": None})
 
+# ------------------------------------------------------- model prices (optional)
+# victorinox_91mm_model_prices.csv: model,price (EUR or any consistent unit).
+# Rows with an empty price fall back to a layer-count weight proxy.
+PRICES = {}
+_prices_path = f"{WS}/victorinox_91mm_model_prices.csv"
+if os.path.exists(_prices_path):
+    with open(_prices_path, encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            if r.get("model") and r.get("price", "").strip():
+                try:
+                    PRICES[r["model"]] = float(r["price"])
+                except ValueError:
+                    pass
+
 # ---------------------------------------------------------------- verify data
 toolset_union = set().union(*MODELS.values())
 unknown = toolset_union - set(TOOL_LIST)
@@ -189,6 +203,12 @@ main { display:grid; grid-template-columns: 320px 1fr 340px; gap:14px; padding:1
 #exportBtns { display:flex; gap:8px; padding:0 12px 12px; }
 #exportBtns button { flex:1; padding:7px; border:1px solid var(--line); background:#fff; border-radius:7px; cursor:pointer; font-size:12.5px; font-weight:600; }
 #exportBtns button:hover { border-color:var(--accent); background:#fffaf0; }
+#shopPanel .item { display:flex; justify-content:space-between; align-items:baseline; font-size:13px; padding:5px 12px; }
+#shopPanel .item .take { font-size:11px; color:var(--dim); }
+#shopPanel .price { font-weight:700; }
+#shopPanel .total { border-top:1px solid var(--line); margin-top:4px; padding:6px 12px 8px; display:flex; justify-content:space-between; font-size:13px; font-weight:700; }
+#shopPanel .hint { padding:10px 12px 12px; font-size:12.5px; color:var(--dim); }
+#shopPanel .alt { border:none; background:none; color:var(--accent); font-size:11.5px; cursor:pointer; padding:2px 12px 8px; text-decoration:underline; }
 footer { text-align:center; color:var(--dim); font-size:11px; padding:8px; }
 @media (max-width:1100px) { main { grid-template-columns:1fr; } }
 </style>
@@ -241,6 +261,10 @@ footer { text-align:center; color:var(--dim); font-size:11px; padding:8px; }
         <button id="dlCsv">⬇ Build CSV</button>
       </div>
     </div>
+    <div class="panel" id="shopPanel" style="margin-top:14px">
+      <h2>Shopping List</h2>
+      <div id="shopList"></div>
+    </div>
   </section>
 </main>
 <div class="panel" id="candidates" style="position:fixed; left:352px; top:64px; width:330px; z-index:50; display:none; box-shadow:0 6px 24px rgba(0,0,0,.18)">
@@ -258,6 +282,7 @@ const ARCHETYPES = __ARCHETYPES_JSON__;
 const MODELS = __MODELS_JSON__;
 const MODELS_LAYERS = __MODELS_LAYERS_JSON__;
 const SLOT_SPECS = __SLOT_SPECS_JSON__;
+const PRICES = __PRICES_JSON__;
 
 // ================== constants ==================
 const CAT = {
@@ -603,7 +628,111 @@ function renderStats() {
       <span class="k">Weight</span><span class="v">${known ? g.toFixed(0) : "≈ " + g.toFixed(0)}</span><span class="u">g</span></div>
     <div class="stat"><span class="k">Layers</span><span class="v">${nL}</span><span class="u">/</span></div>`;
 }
-function renderAll() { renderPalette(); renderCandidates(); renderKnife(); renderMatches(); renderStats(); }
+// ================== shopping list ==================
+// Cost of a donor model: the user price if provided, otherwise a layer-count
+// proxy (a rough monotone scale: 1 layer = 10, + 3 per extra layer).
+function modelCost(name) {
+  if (PRICES[name] !== undefined) return PRICES[name];
+  const lay = MODELS_LAYERS[name];
+  const n = Object.keys(lay).filter(k => k !== "order").length;
+  return 10 + 3 * (n - 1);
+}
+// k-th cheapest solutions of the set-cover DP: state = subset of required
+// layer slots still uncovered. Each model can be bought at most once (one
+// physical knife per donor). Iterate models, knapsack-style over subsets.
+// requirements: [{slot, idx}] — a donor must contain the EXACT layer
+// configuration (archetype idx) in that slot, not just any variant of it.
+function findDonorSolutions(requirements, k) {
+  const req = requirements.map(r => `${r.slot}:${r.idx}`);
+  const n = req.length;
+  if (!n) return [];
+  const full = (1 << n) - 1;
+  // coverage mask per model: which exact (slot, archetype) pairs it supplies
+  const cands = [];
+  for (const name of Object.keys(MODELS_LAYERS)) {
+    const lay = MODELS_LAYERS[name];
+    let mask = 0;
+    for (let i = 0; i < n; i++) {
+      const [slot, idx] = req[i].split(":");
+      if (lay[slot] === Number(idx)) mask |= (1 << i);
+    }
+    if (mask) cands.push({ name, mask, cost: modelCost(name) });
+  }
+  cands.sort((a, b) => a.cost - b.cost || b.mask - a.mask || a.name.localeCompare(b.name));
+  // DP over subsets: keep up to k best (cheapest, tie-break: fewer knives)
+  const dp = new Map();   // mask -> [{cost, knives:[names]}] (sorted, <= k entries)
+  dp.set(full, [{ cost: 0, knives: [] }]);
+  for (const c of cands) {
+    const entries = [...dp.entries()];
+    for (const [mask, list] of entries) {
+      const nm = mask & ~c.mask;
+      if (nm === mask) continue;
+      const cur = dp.get(nm) || [];
+      for (const sol of list) {
+        if (sol.knives.includes(c.name)) continue;   // one knife per donor
+        const nsol = { cost: sol.cost + c.cost, knives: [...sol.knives, c.name] };
+        cur.push(nsol);
+      }
+      const byCost = (a, b) => (a.cost - b.cost) ||
+        (a.knives.length - b.knives.length) ||
+        a.knives.join("|").localeCompare(b.knives.join("|"));
+      cur.sort(byCost);
+      dp.set(nm, cur.slice(0, k));
+    }
+  }
+  const res = dp.get(0) || [];
+  return res.map(s => ({ cost: s.cost, knives: s.knives }));
+}
+function renderShoppingList() {
+  const box = document.getElementById("shopList");
+  const slots = Object.keys(build);
+  if (!slots.length) {
+    box.innerHTML = `<div class="hint">Add layers to your build — the cheapest set of donor knives to harvest them from will appear here.</div>`;
+    return;
+  }
+  const reqs = slots.map(s => ({ slot: s, idx: build[s] }));
+  const sols = findDonorSolutions(reqs, 3);
+  if (!sols.length) {
+    box.innerHTML = `<div class="hint">No reference model provides every layer of this build — one layer has no observed donor.</div>`;
+    return;
+  }
+  box.innerHTML = "";
+  const names = sols[0].knives.map(n => n);
+  // per-donor: which layers it supplies
+  const items = names.map(name => {
+    const take = reqs.filter(r => MODELS_LAYERS[name][r.slot] === r.idx)
+      .map(r => SLOTS.find(x => x.id === r.slot).label);
+    return { name, take };
+  });
+  for (const it of items) {
+    const d = document.createElement("div");
+    d.className = "item";
+    const price = PRICES[it.name] !== undefined ? PRICES[it.name].toFixed(2) : "n/a";
+    d.innerHTML = `<span><b>${it.name}</b><div class="take">take: ${it.take.join(", ")}</div></span>
+      <span class="price">${price}${PRICES[it.name] !== undefined ? " €" : ""}</span>`;
+    box.appendChild(d);
+  }
+  const tot = document.createElement("div");
+  tot.className = "total";
+  const priced = names.every(n => PRICES[n] !== undefined);
+  tot.innerHTML = `<span>Total — ${names.length} knife${names.length!==1?"s":""}</span>
+    <span>${priced ? sols[0].cost.toFixed(2) + " €" : "no price data"}</span>`;
+  box.appendChild(tot);
+  if (sols.length > 1) {
+    const alt = document.createElement("button");
+    alt.className = "alt";
+    alt.textContent = `alternative${sols.length > 2 ? "s" : ""}: ${sols.length - 1} more`;
+    alt.onclick = () => {
+      let h = "";
+      for (const s of sols) {
+        h += `<div class="item"><span>${s.knives.join(" + ")}</span><span class="price">${s.cost.toFixed(1)}</span></div>`;
+      }
+      box.innerHTML = h + `<button class="alt" onclick="renderShoppingList()">⬅ back</button>`;
+    };
+    box.appendChild(alt);
+  }
+}
+function renderAll() { renderPalette(); renderCandidates(); renderKnife(); renderMatches(); renderStats(); renderShoppingList(); }
 renderAll();
 </script>
 </body>
@@ -623,6 +752,7 @@ html = (HTML
         .replace("__MODELS_JSON__", json.dumps({m: sorted(t) for m, t in MODELS.items()}))
         .replace("__MODELS_LAYERS_JSON__", json.dumps(models_layers))
         .replace("__SLOT_SPECS_JSON__", json.dumps(SLOT_SPECS))
+        .replace("__PRICES_JSON__", json.dumps(PRICES))
         .replace("__MODEL_COUNT__", str(len(MODELS)))
         .replace("__TOOL_COUNT__", str(len(TOOL_LIST)))
         .replace("__ARCH_COUNT__", str(sum(len(v) for v in ARCHETYPES.values()))))
