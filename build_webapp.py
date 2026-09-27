@@ -152,15 +152,8 @@ main { display:grid; grid-template-columns: 320px 1fr 340px; gap:14px; padding:1
 .toolbar button { padding:6px 12px; border:1px solid var(--line); background:#fff; border-radius:7px; cursor:pointer; font-size:12.5px; font-weight:600; }
 .toolbar button:hover { border-color:var(--accent); background:#fffaf0; }
 #buildPanel .inner { padding:10px 12px; }
-.slot-row { display:flex; align-items:center; gap:8px; padding:5px 6px; border-radius:7px; cursor:pointer; }
-.slot-row:hover { background:#f7f2e6; }
-.slot-row.filled:hover { background:#f2e8d5; }
-.slot-label { font-size:11px; color:var(--dim); width:118px; flex:none; }
-.slot-content { flex:1; min-height:20px; display:flex; flex-wrap:wrap; gap:4px; }
 .chip { display:inline-flex; align-items:center; gap:5px; font-size:11.5px; font-weight:600; color:#fff; padding:2px 8px; border-radius:10px; }
 .chip.back { outline:1.5px solid rgba(255,255,255,.55); }
-.slot-empty { font-size:11.5px; color:#b9af9c; font-style:italic; }
-.slot-add { font-size:16px; color:var(--dim); flex:none; }
 #matches { padding:8px 12px 12px; }
 .match { display:flex; justify-content:space-between; font-size:12.5px; padding:4px 6px; border-radius:6px; }
 .match:hover { background:#f7f2e6; }
@@ -210,7 +203,6 @@ footer { text-align:center; color:var(--dim); font-size:11px; padding:8px; }
         <select id="modelSelect"><option value="">Load layers from a model…</option></select>
         <button id="clearBtn" title="Remove all layers">Clear</button>
       </div>
-      <div class="inner" id="buildState"></div>
     </div>
     <div class="panel" style="margin-top:14px">
       <h2>Matching Models</h2>
@@ -371,36 +363,6 @@ function configCard(slotId, a) {
   return c;
 }
 
-// ================== build state panel ==================
-function renderBuildState() {
-  const box = document.getElementById("buildState");
-  box.innerHTML = "";
-  for (const slot of SLOTS) {
-    const row = document.createElement("div");
-    row.className = "slot-row" + (build[slot.id] !== undefined ? " filled" : "");
-    let content;
-    if (build[slot.id] !== undefined) {
-      const a = ARCHETYPES[slot.id][build[slot.id]];
-      content = a.tools.map(t =>
-        `<span class="chip ${TOOL_INFO[t].location==="Back"?"back":""}" style="background:${colorOf(t)}" title="${TOOL_INFO[t].description}">${iconOf(t)} ${t}</span>`).join("");
-    } else {
-      content = `<span class="slot-empty">empty — click to choose…</span>`;
-    }
-    row.innerHTML = `<span class="slot-label">${slot.label}</span>
-      <span class="slot-content">${content}</span>
-      ${build[slot.id]===undefined ? `<span class="slot-add">＋</span>` : ""}`;
-    row.onclick = () => {
-      candSlotFocus = slot.id; selectedTool = null; renderPalette(); renderCandidates();
-    };
-    box.appendChild(row);
-  }
-  // keyring fixed row
-  const kr = document.createElement("div");
-  kr.className = "slot-row filled";
-  kr.innerHTML = `<span class="slot-label">Keyring (always)</span>
-    <span class="slot-content"><span class="chip" style="background:${colorOf("Keyring")}">${iconOf("Keyring")} Keyring</span></span>`;
-  box.appendChild(kr);
-}
 function removeLayer(slotId) { delete build[slotId]; layerOrder = layerOrder.filter(s => s !== slotId); renderAll(); }
 function moveLayer(slotId, dir) {
   const i = layerOrder.indexOf(slotId);
@@ -581,7 +543,7 @@ document.addEventListener("click", e => {
   if (!e.target.isConnected) return;   // detached by our own re-render: ignore
   panel.style.display = "none"; candSlotFocus = null;
 });
-function renderAll() { renderPalette(); renderCandidates(); renderBuildState(); renderKnife(); renderMatches(); }
+function renderAll() { renderPalette(); renderCandidates(); renderKnife(); renderMatches(); }
 renderAll();
 </script>
 </body>
