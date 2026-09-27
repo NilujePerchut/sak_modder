@@ -272,7 +272,14 @@ function configCard(slotId, a) {
   c.innerHTML = `<div><div class="ctools">${chipRow}</div>
     <div class="cmodels">as in: ${ex}</div></div>
     <span class="badge ${filled && !same ? "swap" : ""}">${same ? "✓ in build" : filled ? "swap" : "add"}</span>`;
-  c.onclick = () => { build[slotId] = idx; if (!layerOrder.includes(slotId)) layerOrder.push(slotId); renderAll(); };
+  c.onclick = () => {
+    build[slotId] = idx;
+    if (!layerOrder.includes(slotId)) layerOrder.push(slotId);
+    // layer chosen: close the configuration panel (also drops the pending
+    // tool selection so the panel does not reappear on the next render)
+    selectedTool = null; candSlotFocus = null;
+    renderAll();
+  };
   return c;
 }
 
