@@ -115,6 +115,17 @@ if os.path.exists(_prices_path):
                 except ValueError:
                     pass
 
+# ------------------------------------------------- model availability (retired)
+# victorinox_91mm_model_availability.csv: model,retired,source
+# retired=Y means the model is no longer sold -> excluded as a donor knife.
+RETIRED = set()
+_avail_path = f"{WS}/victorinox_91mm_model_availability.csv"
+if os.path.exists(_avail_path):
+    with open(_avail_path, encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            if (r.get("retired") or "").strip().upper() in ("Y", "SR", "TRUE", "1"):
+                RETIRED.add(r["model"])
+
 # ---------------------------------------------------------------- verify data
 toolset_union = set().union(*MODELS.values())
 unknown = toolset_union - set(TOOL_LIST)
@@ -283,6 +294,7 @@ const MODELS = __MODELS_JSON__;
 const MODELS_LAYERS = __MODELS_LAYERS_JSON__;
 const SLOT_SPECS = __SLOT_SPECS_JSON__;
 const PRICES = __PRICES_JSON__;
+const RETIRED = __RETIRED_JSON__;
 
 // ================== constants ==================
 const CAT = {
@@ -650,6 +662,7 @@ function findDonorSolutions(requirements, k) {
   // coverage mask per model: which exact (slot, archetype) pairs it supplies
   const cands = [];
   for (const name of Object.keys(MODELS_LAYERS)) {
+    if (RETIRED.includes(name)) continue;   // no longer sold: not a donor
     const lay = MODELS_LAYERS[name];
     let mask = 0;
     for (let i = 0; i < n; i++) {
@@ -753,6 +766,7 @@ html = (HTML
         .replace("__MODELS_LAYERS_JSON__", json.dumps(models_layers))
         .replace("__SLOT_SPECS_JSON__", json.dumps(SLOT_SPECS))
         .replace("__PRICES_JSON__", json.dumps(PRICES))
+        .replace("__RETIRED_JSON__", json.dumps(sorted(RETIRED)))
         .replace("__MODEL_COUNT__", str(len(MODELS)))
         .replace("__TOOL_COUNT__", str(len(TOOL_LIST)))
         .replace("__ARCH_COUNT__", str(sum(len(v) for v in ARCHETYPES.values()))))
