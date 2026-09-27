@@ -632,8 +632,9 @@ function renderSide(svgId, side, filled) {
 
 // ================== matching models ==================
 function builtTools() {
-  const s = new Set(["Keyring"]);
+  const s = new Set();
   for (const slotId in build) for (const t of ARCHETYPES[slotId][build[slotId]].tools) s.add(t);
+  if (s.size) s.add("Keyring");
   return s;
 }
 function renderMatches() {
