@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Style proposal 3 — « Swiss editorial » · 91mm SAK Builder</title>
+<style>
+:root { --red:#e30613; --ink:#111111; --dim:#6b6b6b; --line:#111111; --hair:#d9d9d9; --bg:#ffffff; }
+* { box-sizing:border-box; }
+body {
+  margin:0; background:var(--bg); color:var(--ink);
+  font:14px/1.5 "Helvetica Neue", Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+.mock-banner { background:var(--ink); color:#fff; font-size:12px; text-align:center; padding:6px 10px; letter-spacing:.4px; }
+.mock-banner a { color:#ff8a8a; }
+header {
+  display:flex; align-items:baseline; gap:18px; padding:18px 28px 14px;
+  border-bottom:3px solid var(--ink); max-width:1440px; margin:0 auto;
+}
+.logo-sq { width:14px; height:14px; background:var(--red); align-self:center; flex:none; }
+header h1 { font-size:26px; margin:0; font-weight:800; letter-spacing:-.5px; text-transform:uppercase; }
+header .sub { font-size:12.5px; color:var(--dim); max-width:520px; }
+header .spacer { margin-left:auto; }
+.pill {
+  padding:7px 16px; border:1.5px solid var(--ink); background:#fff; color:var(--ink);
+  font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:1px; cursor:pointer; border-radius:0;
+}
+.pill:hover { background:var(--ink); color:#fff; }
+main {
+  display:grid; grid-template-columns:280px minmax(0,1fr) 300px;
+  max-width:1440px; margin:0 auto; padding:0 28px 28px;
+}
+main > section { padding:18px 20px 24px; }
+main > section + section { border-left:1px solid var(--line); }
+.panel h2 {
+  display:flex; align-items:center; gap:9px; font-size:11px; font-weight:800;
+  text-transform:uppercase; letter-spacing:2px; margin:0 0 4px; padding-bottom:10px;
+  border-bottom:1.5px solid var(--ink);
+}
+.panel h2::before { content:""; width:8px; height:8px; background:var(--red); flex:none; }
+.panel + .panel { margin-top:26px; }
+.search { padding:12px 0; }
+.search input {
+  width:100%; padding:9px 0; border:none; border-bottom:1.5px solid var(--ink);
+  font-size:13.5px; background:transparent; color:var(--ink); outline:none; border-radius:0;
+}
+.search input::placeholder { color:#a3a3a3; }
+.tool-item { display:flex; align-items:center; gap:11px; padding:9px 2px; cursor:pointer; border-bottom:1px solid var(--hair); }
+.tool-item:hover { background:#fafafa; }
+.tool-item.selected { background:#fdecec; box-shadow:inset 3px 0 0 var(--red); }
+.tool-ico {
+  width:30px; height:30px; flex:none; background:var(--ink); color:#fff;
+  display:flex; align-items:center; justify-content:center; font-size:15px;
+}
+.tool-item.selected .tool-ico { background:var(--red); }
+.tool-name { font-weight:700; font-size:13px; }
+.tool-meta { font-size:11px; color:var(--dim); text-transform:uppercase; letter-spacing:.8px; }
+#preview .inner { padding-top:14px; }
+#knifeWrap { display:flex; gap:22px; }
+.previewCol { flex:1; min-width:0; }
+.pvHead {
+  display:flex; align-items:center; justify-content:space-between;
+  font-size:10.5px; color:var(--ink); font-weight:800; text-transform:uppercase; letter-spacing:2px;
+  padding:0 2px 8px; border-bottom:1.5px solid var(--ink); margin-bottom:10px;
+}
+.pvHead button {
+  font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:1px;
+  padding:3px 10px; border:1.5px solid var(--ink); background:#fff; color:var(--ink); cursor:pointer;
+}
+.pvHead button:hover { background:var(--ink); color:#fff; }
+#knifeWrap svg { width:100%; height:auto; display:block; }
+#stackStats { display:flex; gap:0; margin-top:16px; border:1.5px solid var(--ink); }
+.stat { flex:1; padding:12px 16px; display:flex; flex-direction:column; gap:2px; }
+.stat + .stat { border-left:1.5px solid var(--ink); }
+.stat .k { font-size:9.5px; color:var(--dim); text-transform:uppercase; letter-spacing:1.8px; font-weight:800; }
+.stat .v { font-size:26px; font-weight:800; letter-spacing:-.5px; font-variant-numeric:tabular-nums; }
+.stat .v small { font-size:12px; font-weight:700; color:var(--dim); margin-left:3px; }
+.toolbar { display:flex; gap:8px; padding:14px 0 6px; flex-wrap:wrap; }
+.toolbar button {
+  padding:8px 14px; border:1.5px solid var(--ink); background:#fff; color:var(--ink);
+  font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:1px; cursor:pointer;
+}
+.toolbar button:hover { background:var(--red); border-color:var(--red); color:#fff; }
+.layer-row { display:flex; align-items:center; gap:7px; padding:10px 2px; border-bottom:1px solid var(--hair); flex-wrap:wrap; }
+.layer-row .lbl { font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:1px; width:108px; flex:none; }
+.chip {
+  display:inline-flex; align-items:center; gap:5px; font-size:10.5px; font-weight:700;
+  color:#fff; background:var(--ink); padding:4px 9px; text-transform:uppercase; letter-spacing:.5px;
+}
+.chip.blade { background:var(--red); }
+.layer-row .ctl { margin-left:auto; display:flex; gap:4px; }
+.layer-row .ctl button { width:24px; height:24px; border:1.5px solid var(--ink); background:#fff; color:var(--ink); font-size:10px; cursor:pointer; font-weight:800; }
+.layer-row .ctl button:hover { background:var(--ink); color:#fff; }
+.match { display:flex; justify-content:space-between; font-size:13px; padding:8px 2px; border-bottom:1px solid var(--hair); font-weight:600; }
+.match .pct { color:var(--dim); font-weight:800; font-variant-numeric:tabular-nums; }
+.match.exact { background:var(--red); color:#fff; margin:0 -8px; padding:8px 10px; }
+.match.exact .pct { color:#ffd6d6; }
+.shop-item { display:flex; justify-content:space-between; padding:9px 2px; font-size:13px; border-bottom:1px solid var(--hair); font-weight:600; }
+.shop-item .take { display:block; font-size:11px; color:var(--dim); font-weight:400; }
+.shop-total { display:flex; justify-content:space-between; padding:12px 2px 0; font-weight:800; font-size:15px; text-transform:uppercase; letter-spacing:1px; border-top:1.5px solid var(--ink); margin-top:6px; }
+footer { border-top:1.5px solid var(--ink); text-align:center; color:var(--dim); font-size:11px; padding:14px; text-transform:uppercase; letter-spacing:1px; }
+@media (max-width:1100px) { main { grid-template-columns:1fr; } main > section + section { border-left:none; border-top:1px solid var(--line); } }
+</style>
+</head>
+<body>
+<div class="mock-banner">STYLE PROPOSAL 3 / 4 — « SWISS EDITORIAL » — grille typographique, filetés, rouge/noir/blanc · <a href="index.html">← galerie des styles</a></div>
+<header>
+  <div class="logo-sq"></div>
+  <h1>91mm SAK Builder</h1>
+  <div class="sub">Assemble a custom Victorinox 91mm Swiss Army Knife, layer by layer — data from SAKwiki</div>
+  <div class="spacer"></div>
+  <button class="pill">Theme ◐</button>
+</header>
+<main>
+  <section class="panel">
+    <h2>Tools</h2>
+    <div class="search"><input type="search" placeholder="Search a tool… e.g. corkscrew" readonly></div>
+    <div>
+      <div class="tool-item selected"><div class="tool-ico">🔪</div><div><div class="tool-name">Large Blade</div><div class="tool-meta">Front · Blade</div></div></div>
+      <div class="tool-item"><div class="tool-ico">🔪</div><div><div class="tool-name">Small Blade</div><div class="tool-meta">Front · Blade</div></div></div>
+      <div class="tool-item"><div class="tool-ico">🍺</div><div><div class="tool-name">Cap-lifter / Bottle Opener</div><div class="tool-meta">Front · Opener</div></div></div>
+      <div class="tool-item"><div class="tool-ico">✂️</div><div><div class="tool-name">Scissors</div><div class="tool-meta">Front · Scissor</div></div></div>
+      <div class="tool-item"><div class="tool-ico">🍾</div><div><div class="tool-name">Corkscrew</div><div class="tool-meta">Back · Corkscrew</div></div></div>
+    </div>
+  </section>
+
+  <section class="panel" id="preview">
+    <h2>Preview</h2>
+    <div class="inner">
+      <div id="knifeWrap">
+        <div class="previewCol">
+          <div class="pvHead"><span>Front side</span><button>↺ Order</button></div>
+          <svg viewBox="0 0 420 208" font-family="Helvetica Neue, Helvetica, Arial, sans-serif">
+            <!-- top scale -->
+            <rect x="30" y="26" width="360" height="18" rx="5" fill="#e30613" stroke="#111" stroke-width="1.2"/>
+            <rect x="50" y="30" width="30" height="10" rx="1.5" fill="#fff" stroke="#111" stroke-width=".8"/>
+            <rect x="62.5" y="31.5" width="5" height="7" fill="#e30613"/>
+            <rect x="61" y="34" width="8" height="2.6" fill="#e30613"/>
+            <circle cx="40" cy="35" r="3" fill="#fff" stroke="#111" stroke-width="1"/>
+            <circle cx="380" cy="35" r="3" fill="#fff" stroke="#111" stroke-width="1"/>
+            <!-- bands -->
+            <g stroke="#111" stroke-width="1.2" fill="#fff">
+              <rect x="30" y="48" width="360" height="24"/>
+              <rect x="30" y="76" width="360" height="24"/>
+              <rect x="30" y="104" width="360" height="24"/>
+            </g>
+            <g font-size="8" fill="#6b6b6b" text-anchor="middle" letter-spacing="2">
+              <text x="210" y="45">BLADE LAYER</text>
+              <text x="210" y="73">OPENERS LAYER</text>
+              <text x="210" y="101">SCISSORS LAYER</text>
+            </g>
+            <!-- chips: sharp squares, black (blade = red) -->
+            <g font-size="9.5" font-weight="700" fill="#fff">
+              <rect x="38" y="52" width="80" height="16" fill="#e30613"/><text x="44" y="63.5">🔪 LARGE BLADE</text>
+              <rect x="122" y="52" width="80" height="16" fill="#111"/><text x="128" y="63.5">🔪 SMALL BLADE</text>
+              <rect x="38" y="80" width="104" height="16" fill="#111"/><text x="44" y="91.5">🍺 CAP-LIFTER…</text>
+              <rect x="146" y="80" width="76" height="16" fill="#111"/><text x="152" y="91.5">🥫 CAN OPENER</text>
+              <rect x="38" y="108" width="66" height="16" fill="#111"/><text x="44" y="119.5">✂️ SCISSORS</text>
+            </g>
+            <!-- bottom scale + keyring -->
+            <rect x="30" y="132" width="360" height="18" rx="5" fill="#e30613" stroke="#111" stroke-width="1.2"/>
+            <circle cx="40" cy="141" r="3" fill="#fff" stroke="#111" stroke-width="1"/>
+            <circle cx="380" cy="141" r="3" fill="#fff" stroke="#111" stroke-width="1"/>
+            <circle cx="38" cy="166" r="8" fill="none" stroke="#111" stroke-width="2"/>
+            <!-- dimension -->
+            <g stroke="#111" stroke-width=".8">
+              <line x1="30" y1="188" x2="390" y2="188"/>
+              <line x1="30" y1="183" x2="30" y2="193"/><line x1="390" y1="183" x2="390" y2="193"/>
+            </g>
+            <text x="210" y="202" font-size="10" font-weight="700" text-anchor="middle" fill="#111">91 mm</text>
+          </svg>
+        </div>
+        <div class="previewCol">
+          <div class="pvHead"><span>Back side</span></div>
+          <svg viewBox="0 0 420 208" font-family="Helvetica Neue, Helvetica, Arial, sans-serif">
+            <rect x="30" y="26" width="360" height="18" rx="5" fill="#e30613" stroke="#111" stroke-width="1.2"/>
+            <circle cx="40" cy="35" r="3" fill="#fff" stroke="#111" stroke-width="1"/>
+            <circle cx="380" cy="35" r="3" fill="#fff" stroke="#111" stroke-width="1"/>
+            <g stroke="#111" stroke-width="1.2" fill="#fff">
+              <rect x="30" y="48" width="360" height="24"/>
+              <rect x="30" y="76" width="360" height="24"/>
+              <rect x="30" y="104" width="360" height="24"/>
+            </g>
+            <g font-size="8" fill="#6b6b6b" text-anchor="middle" letter-spacing="2">
+              <text x="210" y="45">BLADE LAYER</text>
+              <text x="210" y="73">OPENERS LAYER</text>
+              <text x="210" y="101">SCISSORS LAYER</text>
+            </g>
+            <g font-size="9.5" font-weight="700" fill="#fff">
+              <rect x="38" y="52" width="74" height="16" fill="#111"/><text x="44" y="63.5">🍾 CORKSCREW</text>
+              <rect x="38" y="80" width="90" height="16" fill="#111"/><text x="44" y="91.5">🪡 REAMER/AWL</text>
+              <rect x="38" y="108" width="120" height="16" fill="#111"/><text x="44" y="119.5">🪝 MULTIPURPOSE…</text>
+            </g>
+            <rect x="30" y="132" width="360" height="18" rx="5" fill="#e30613" stroke="#111" stroke-width="1.2"/>
+            <circle cx="40" cy="141" r="3" fill="#fff" stroke="#111" stroke-width="1"/>
+            <circle cx="380" cy="141" r="3" fill="#fff" stroke="#111" stroke-width="1"/>
+            <g stroke="#111" stroke-width=".8">
+              <line x1="30" y1="188" x2="390" y2="188"/>
+              <line x1="30" y1="183" x2="30" y2="193"/><line x1="390" y1="183" x2="390" y2="193"/>
+            </g>
+            <text x="210" y="202" font-size="10" font-weight="700" text-anchor="middle" fill="#111">91 mm</text>
+          </svg>
+        </div>
+      </div>
+      <div id="stackStats">
+        <div class="stat"><span class="k">Thickness</span><span class="v">17.2<small>mm</small></span></div>
+        <div class="stat"><span class="k">Weight</span><span class="v">84.1<small>g</small></span></div>
+        <div class="stat"><span class="k">Layers</span><span class="v">3<small>· 6 tools</small></span></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="panel">
+      <h2>Layers</h2>
+      <div class="toolbar">
+        <button>Load model…</button><button>Export</button><button>Import</button><button>Clear</button>
+      </div>
+      <div class="layer-row"><span class="lbl">Blade layer</span><span class="chip blade">🔪 Large Blade</span><span class="chip blade">🔪 Small Blade</span><span class="chip">🍾 Corkscrew</span><span class="ctl"><button>▲</button><button>▼</button><button>✕</button></span></div>
+      <div class="layer-row"><span class="lbl">Openers layer</span><span class="chip">🍺 Cap-lifter</span><span class="chip">🥫 Can Opener</span><span class="chip">🪡 Reamer</span><span class="ctl"><button>▲</button><button>▼</button><button>✕</button></span></div>
+      <div class="layer-row"><span class="lbl">Scissors layer</span><span class="chip">✂️ Scissors</span><span class="chip">🪝 Hook</span><span class="ctl"><button>▲</button><button>▼</button><button>✕</button></span></div>
+    </div>
+    <div class="panel">
+      <h2>Matching models</h2>
+      <div class="match exact"><span>★ Climber</span><span class="pct">100%</span></div>
+      <div class="match"><span>Voyager</span><span class="pct">89%</span></div>
+      <div class="match"><span>Explorer</span><span class="pct">89%</span></div>
+      <div class="match"><span>Super Tinker</span><span class="pct">78%</span></div>
+    </div>
+    <div class="panel">
+      <h2>Shopping list</h2>
+      <div class="shop-item"><span>Spartan<span class="take">blade + openers layers</span></span><span>€27</span></div>
+      <div class="shop-item"><span>Compact<span class="take">scissors + hook layer</span></span><span>€47</span></div>
+      <div class="shop-total"><span>Total</span><span>€74</span></div>
+    </div>
+  </section>
+</main>
+<footer>Data: SAKwiki — 99 reference models · 36 tools · 44 layer configurations · mockup « Swiss editorial »</footer>
+</body>
+</html>
