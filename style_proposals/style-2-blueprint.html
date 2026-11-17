@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Style proposal 2 — « Blueprint » · 91mm SAK Builder</title>
+<style>
+:root {
+  --bg:#0b1626; --panel:rgba(15,29,51,.72); --line:rgba(110,180,255,.22);
+  --ink:#dceaff; --dim:#6f9cc9; --accent:#6ec1ff; --red:#ff5d5d; --sel:rgba(110,180,255,.14);
+  --mono:"Cascadia Mono","SF Mono",Consolas,Menlo,monospace;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0; color:var(--ink);
+  font:14px/1.5 "Segoe UI", system-ui, sans-serif;
+  background-color:var(--bg);
+  background-image:
+    linear-gradient(rgba(110,180,255,.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(110,180,255,.05) 1px, transparent 1px),
+    linear-gradient(rgba(110,180,255,.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(110,180,255,.1) 1px, transparent 1px);
+  background-size:24px 24px, 24px 24px, 120px 120px, 120px 120px;
+  min-height:100vh;
+}
+.mock-banner { background:#060d18; color:#9fd0ff; font:12px var(--mono); text-align:center; padding:6px 10px; border-bottom:1px solid var(--line); }
+.mock-banner a { color:#6ec1ff; }
+header {
+  display:flex; align-items:center; gap:14px; padding:12px 22px;
+  background:rgba(9,19,35,.9); border-bottom:1px solid var(--line);
+}
+.logo {
+  width:36px; height:36px; border:1px solid var(--accent); color:var(--accent);
+  display:flex; align-items:center; justify-content:center; font-size:17px; border-radius:4px;
+  box-shadow:0 0 12px rgba(110,193,255,.35), inset 0 0 8px rgba(110,193,255,.2);
+}
+header h1 { font:700 17px var(--mono); margin:0; letter-spacing:1px; color:#fff; }
+header .sub { font:11px var(--mono); color:var(--dim); }
+header .spacer { margin-left:auto; }
+.pill {
+  padding:6px 14px; border-radius:4px; border:1px solid var(--line); background:transparent;
+  font:12px var(--mono); color:var(--accent); cursor:pointer;
+}
+.pill:hover { background:var(--sel); box-shadow:0 0 10px rgba(110,193,255,.3); }
+main { display:grid; grid-template-columns:290px minmax(0,1fr) 320px; gap:16px; padding:18px; max-width:1440px; margin:0 auto; }
+.panel { background:var(--panel); border:1px solid var(--line); border-radius:6px; backdrop-filter:blur(2px); }
+.panel h2 {
+  font:700 11px var(--mono); text-transform:uppercase; letter-spacing:2px; color:var(--accent);
+  margin:0; padding:12px 14px 9px; border-bottom:1px dashed var(--line);
+}
+.search { padding:10px 14px; }
+.search input {
+  width:100%; padding:8px 12px; border:1px solid var(--line); border-radius:4px;
+  font:12.5px var(--mono); background:rgba(6,13,24,.8); color:var(--ink); outline:none;
+}
+.search input:focus { border-color:var(--accent); box-shadow:0 0 0 2px rgba(110,193,255,.15); }
+.tool-item { display:flex; align-items:center; gap:10px; padding:8px 14px; cursor:pointer; border-left:2px solid transparent; margin:1px 0; }
+.tool-item:hover { background:rgba(110,180,255,.07); }
+.tool-item.selected { background:var(--sel); border-left-color:var(--accent); }
+.tool-ico {
+  width:30px; height:30px; border-radius:4px; flex:none; display:flex; align-items:center; justify-content:center;
+  font-size:15px; color:var(--accent); border:1px solid var(--line); background:rgba(6,13,24,.8);
+}
+.tool-name { font:600 12.5px var(--mono); }
+.tool-meta { font:10.5px var(--mono); color:var(--dim); }
+#preview .inner { padding:14px; }
+#knifeWrap { display:flex; gap:16px; }
+.previewCol { flex:1; min-width:0; border:1px dashed var(--line); border-radius:4px; padding:8px; }
+.pvHead {
+  display:flex; align-items:center; justify-content:space-between;
+  font:700 10px var(--mono); color:var(--dim); text-transform:uppercase; letter-spacing:2px; padding:0 4px 8px;
+}
+.pvHead button { font:10px var(--mono); padding:3px 9px; border:1px solid var(--line); background:transparent; color:var(--dim); border-radius:3px; cursor:pointer; }
+.pvHead button:hover { color:var(--accent); border-color:var(--accent); }
+#knifeWrap svg { width:100%; height:auto; display:block; }
+#stackStats { display:flex; justify-content:center; gap:12px; padding:12px 0 2px; flex-wrap:wrap; }
+.stat { display:inline-flex; align-items:baseline; gap:6px; background:rgba(6,13,24,.8); border:1px solid var(--line); border-radius:4px; padding:7px 14px; }
+.stat .k { font:700 9.5px var(--mono); color:var(--dim); text-transform:uppercase; letter-spacing:1.5px; }
+.stat .v { font:800 18px var(--mono); color:var(--accent); text-shadow:0 0 8px rgba(110,193,255,.5); font-variant-numeric:tabular-nums; }
+.stat .u { font:11px var(--mono); color:var(--dim); }
+.toolbar { display:flex; gap:8px; padding:12px 14px 4px; flex-wrap:wrap; }
+.toolbar button { padding:6px 12px; border:1px solid var(--line); background:transparent; color:var(--ink); border-radius:4px; cursor:pointer; font:12px var(--mono); }
+.toolbar button:hover { border-color:var(--accent); color:var(--accent); }
+.layer-row { display:flex; align-items:center; gap:8px; padding:9px 14px; border-bottom:1px dashed var(--line); font-family:var(--mono); }
+.layer-row:last-child { border-bottom:none; }
+.layer-row .lbl { font:600 12px var(--mono); width:110px; flex:none; color:var(--ink); }
+.chip { display:inline-flex; align-items:center; gap:5px; font:600 10.5px var(--mono); color:var(--accent); padding:3px 8px; border:1px solid var(--line); border-radius:3px; background:rgba(110,180,255,.06); }
+.layer-row .ctl { margin-left:auto; display:flex; gap:4px; }
+.layer-row .ctl button { width:22px; height:22px; border-radius:3px; border:1px solid var(--line); background:transparent; color:var(--dim); font-size:10px; cursor:pointer; }
+.match { display:flex; justify-content:space-between; font:12.5px var(--mono); padding:7px 14px; }
+.match .pct { color:var(--dim); font-weight:700; }
+.match.exact { background:rgba(110,255,170,.1); color:#8affc0; font-weight:700; }
+.shop-item { display:flex; justify-content:space-between; padding:8px 14px; font:12.5px var(--mono); border-bottom:1px dashed var(--line); }
+.shop-item .take { display:block; font-size:10.5px; color:var(--dim); }
+.shop-total { display:flex; justify-content:space-between; padding:10px 14px; font:700 14px var(--mono); color:var(--accent); }
+footer { text-align:center; color:var(--dim); font:10.5px var(--mono); padding:14px; }
+@media (max-width:1100px) { main { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<div class="mock-banner">// STYLE PROPOSAL 2/4 — "BLUEPRINT" (fiche technique sombre) — maquette statique · <a href="index.html">&lt;- galerie</a></div>
+<header>
+  <div class="logo">🔪</div>
+  <div>
+    <h1>91MM_SAK_BUILDER</h1>
+    <div class="sub">// custom 91mm victorinox stackup — src: sakwiki.com</div>
+  </div>
+  <div class="spacer"></div>
+  <button class="pill">[ theme: auto ]</button>
+</header>
+<main>
+  <section class="panel">
+    <h2>tools.db</h2>
+    <div class="search"><input type="search" placeholder="grep tool… e.g. corkscrew" readonly></div>
+    <div>
+      <div class="tool-item selected"><div class="tool-ico">🔪</div><div><div class="tool-name">Large Blade</div><div class="tool-meta">front · cat=blade</div></div></div>
+      <div class="tool-item"><div class="tool-ico">🍺</div><div><div class="tool-name">Cap-lifter</div><div class="tool-meta">front · cat=opener</div></div></div>
+      <div class="tool-item"><div class="tool-ico">✂️</div><div><div class="tool-name">Scissors</div><div class="tool-meta">front · cat=scissor</div></div></div>
+      <div class="tool-item"><div class="tool-ico">🍾</div><div><div class="tool-name">Corkscrew</div><div class="tool-meta">back · cat=corkscrew</div></div></div>
+      <div class="tool-item"><div class="tool-ico">🪡</div><div><div class="tool-name">Reamer / Awl</div><div class="tool-meta">back · cat=punch</div></div></div>
+    </div>
+  </section>
+
+  <section class="panel" id="preview">
+    <h2>preview — sheet 1/1</h2>
+    <div class="inner">
+      <div id="knifeWrap">
+        <div class="previewCol">
+          <div class="pvHead"><span>▸ front_view</span><button>reset_order</button></div>
+          <svg viewBox="0 0 420 224" font-family="Cascadia Mono, Consolas, monospace">
+            <defs>
+              <pattern id="hatch" width="6" height="6" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+                <rect width="6" height="6" fill="rgba(110,180,255,.04)"/>
+                <line x1="0" y1="0" x2="0" y2="6" stroke="rgba(110,193,255,.35)" stroke-width="1"/>
+              </pattern>
+              <pattern id="gridS" width="12" height="12" patternUnits="userSpaceOnUse">
+                <path d="M12 0H0V12" fill="none" stroke="rgba(110,180,255,.12)" stroke-width=".5"/>
+              </pattern>
+              <marker id="arr" markerWidth="7" markerHeight="7" refX="3.5" refY="3.5" orient="auto">
+                <path d="M0 0L7 3.5L0 7z" fill="#6ec1ff"/>
+              </marker>
+            </defs>
+            <rect x="0" y="0" width="420" height="224" fill="url(#gridS)"/>
+            <!-- knife outline -->
+            <g stroke="#6ec1ff" stroke-width="1.2" fill="rgba(110,180,255,.05)">
+              <rect x="30" y="26" width="360" height="18" rx="6"/>
+              <rect x="30" y="48" width="360" height="24" fill="url(#hatch)"/>
+              <rect x="30" y="76" width="360" height="24" fill="url(#hatch)"/>
+              <rect x="30" y="104" width="360" height="24" fill="url(#hatch)"/>
+              <rect x="30" y="132" width="360" height="18" rx="6"/>
+            </g>
+            <!-- centerline -->
+            <line x1="18" y1="88" x2="402" y2="88" stroke="#ff5d5d" stroke-width=".6" stroke-dasharray="10 4 2 4" opacity=".7"/>
+            <!-- rivets / keyring -->
+            <circle cx="40" cy="35" r="3" fill="none" stroke="#6ec1ff"/>
+            <circle cx="380" cy="35" r="3" fill="none" stroke="#6ec1ff"/>
+            <circle cx="40" cy="141" r="3" fill="none" stroke="#6ec1ff"/>
+            <circle cx="380" cy="141" r="3" fill="none" stroke="#6ec1ff"/>
+            <circle cx="38" cy="168" r="8" fill="none" stroke="#6ec1ff" stroke-width="1.4" stroke-dasharray="3 2"/>
+            <!-- chips -->
+            <g font-size="9" fill="#9fd8ff" stroke="#6ec1ff" stroke-width=".8">
+              <rect x="38" y="52" width="78" height="16" rx="2" fill="rgba(110,193,255,.08)"/><text x="44" y="63.5">🔪 LARGE BLADE</text>
+              <rect x="120" y="52" width="80" height="16" rx="2" fill="rgba(110,193,255,.08)"/><text x="126" y="63.5">🔪 SMALL BLADE</text>
+              <rect x="38" y="80" width="100" height="16" rx="2" fill="rgba(110,193,255,.08)"/><text x="44" y="91.5">🍺 CAP-LIFTER/BOTTLE</text>
+              <rect x="142" y="80" width="72" height="16" rx="2" fill="rgba(110,193,255,.08)"/><text x="148" y="91.5">🥫 CAN OPENER</text>
+              <rect x="38" y="108" width="64" height="16" rx="2" fill="rgba(110,193,255,.08)"/><text x="44" y="119.5">✂️ SCISSORS</text>
+            </g>
+            <!-- layer labels with leaders -->
+            <g font-size="8" fill="#6f9cc9">
+              <text x="30" y="23">L1 · BLADE_LAYER</text><line x1="30" y1="26" x2="30" y2="48" stroke="#6f9cc9" stroke-width=".5"/>
+              <text x="30" y="51" dy="-1"></text>
+              <text x="240" y="23">L2 · OPENERS_LAYER</text>
+              <text x="240" y="51">L3 · SCISSORS_LAYER</text>
+            </g>
+            <!-- dimensions -->
+            <g stroke="#6ec1ff" stroke-width=".7" fill="#6ec1ff" font-size="8.5">
+              <line x1="30" y1="192" x2="390" y2="192" marker-start="url(#arr)" marker-end="url(#arr)"/>
+              <line x1="30" y1="186" x2="30" y2="198"/><line x1="390" y1="186" x2="390" y2="198"/>
+              <text x="210" y="203" text-anchor="middle" stroke="none">91.0 mm</text>
+              <line x1="404" y1="26" x2="404" y2="150" marker-start="url(#arr)" marker-end="url(#arr)"/>
+              <line x1="398" y1="26" x2="410" y2="26"/><line x1="398" y1="150" x2="410" y2="150"/>
+              <text x="412" y="92" font-size="8.5" transform="rotate(90 412 92)" text-anchor="middle" stroke="none">17.2 mm</text>
+            </g>
+            <!-- title block -->
+            <g font-size="8" fill="#6f9cc9" stroke="#6ec1ff" stroke-width=".7">
+              <rect x="286" y="206" width="128" height="14" fill="rgba(6,13,24,.9)"/>
+              <text x="292" y="216" stroke="none">SAK-91 / CLIMBER · SCALE 1:1 · REV A</text>
+            </g>
+          </svg>
+        </div>
+        <div class="previewCol">
+          <div class="pvHead"><span>▸ back_view</span></div>
+          <svg viewBox="0 0 420 224" font-family="Cascadia Mono, Consolas, monospace">
+            <rect x="0" y="0" width="420" height="224" fill="url(#gridS)"/>
+            <g stroke="#6ec1ff" stroke-width="1.2" fill="rgba(110,180,255,.05)">
+              <rect x="30" y="26" width="360" height="18" rx="6"/>
+              <rect x="30" y="48" width="360" height="24" fill="url(#hatch)"/>
+              <rect x="30" y="76" width="360" height="24" fill="url(#hatch)"/>
+              <rect x="30" y="104" width="360" height="24" fill="url(#hatch)"/>
+              <rect x="30" y="132" width="360" height="18" rx="6"/>
+            </g>
+            <line x1="18" y1="88" x2="402" y2="88" stroke="#ff5d5d" stroke-width=".6" stroke-dasharray="10 4 2 4" opacity=".7"/>
+            <circle cx="40" cy="35" r="3" fill="none" stroke="#6ec1ff"/>
+            <circle cx="380" cy="35" r="3" fill="none" stroke="#6ec1ff"/>
+            <circle cx="40" cy="141" r="3" fill="none" stroke="#6ec1ff"/>
+            <circle cx="380" cy="141" r="3" fill="none" stroke="#6ec1ff"/>
+            <g font-size="9" fill="#9fd8ff" stroke="#6ec1ff" stroke-width=".8">
+              <rect x="38" y="52" width="72" height="16" rx="2" fill="rgba(110,193,255,.08)"/><text x="44" y="63.5">🍾 CORKSCREW</text>
+              <rect x="38" y="80" width="88" height="16" rx="2" fill="rgba(110,193,255,.08)"/><text x="44" y="91.5">🪡 REAMER/AWL</text>
+              <rect x="38" y="108" width="118" height="16" rx="2" fill="rgba(110,193,255,.08)"/><text x="44" y="119.5">🪝 MULTIPURPOSE HOOK</text>
+            </g>
+            <g stroke="#6ec1ff" stroke-width=".7" fill="#6ec1ff" font-size="8.5">
+              <line x1="30" y1="192" x2="390" y2="192" marker-start="url(#arr)" marker-end="url(#arr)"/>
+              <line x1="30" y1="186" x2="30" y2="198"/><line x1="390" y1="186" x2="390" y2="198"/>
+              <text x="210" y="203" text-anchor="middle" stroke="none">91.0 mm</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+      <div id="stackStats">
+        <span class="stat"><span class="k">thickness</span><span class="v">17.2</span><span class="u">mm</span></span>
+        <span class="stat"><span class="k">weight</span><span class="v">84.1</span><span class="u">g</span></span>
+        <span class="stat"><span class="k">layers</span><span class="v">3</span><span class="u">/ 6 tools</span></span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="panel">
+      <h2>stackup.json</h2>
+      <div class="toolbar">
+        <button>load_model()</button><button>export()</button><button>import()</button><button>clear()</button>
+      </div>
+      <div class="layer-row"><span class="lbl">blade_layer</span><span class="chip">🔪 blade×2</span><span class="chip">🍾 corkscrew</span><span class="ctl"><button>▲</button><button>▼</button><button>✕</button></span></div>
+      <div class="layer-row"><span class="lbl">openers_layer</span><span class="chip">🍺 opener×2</span><span class="chip">🪡 reamer</span><span class="ctl"><button>▲</button><button>▼</button><button>✕</button></span></div>
+      <div class="layer-row"><span class="lbl">scissors_layer</span><span class="chip">✂️ scissors</span><span class="chip">🪝 hook</span><span class="ctl"><button>▲</button><button>▼</button><button>✕</button></span></div>
+    </div>
+    <div class="panel" style="margin-top:16px">
+      <h2>model_match — jaccard</h2>
+      <div class="match exact"><span>★ Climber</span><span class="pct">1.00</span></div>
+      <div class="match"><span>Voyager</span><span class="pct">0.89</span></div>
+      <div class="match"><span>Explorer</span><span class="pct">0.89</span></div>
+      <div class="match"><span>Super Tinker</span><span class="pct">0.78</span></div>
+    </div>
+    <div class="panel" style="margin-top:16px">
+      <h2>bom — shopping list</h2>
+      <div class="shop-item"><span>Spartan<span class="take">donor: blade + openers</span></span><span>€27</span></div>
+      <div class="shop-item"><span>Compact<span class="take">donor: scissors + hook</span></span><span>€47</span></div>
+      <div class="shop-total"><span>TOTAL</span><span>€74</span></div>
+    </div>
+  </section>
+</main>
+<footer>// data: sakwiki 91mm tables — 99 models · 36 tools · 44 layer configs · style mockup "blueprint"</footer>
+</body>
+</html>

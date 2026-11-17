@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Style proposal 1 — « Atelier » · 91mm SAK Builder</title>
+<style>
+:root {
+  --bg:#efeae1; --panel:#fffdf8; --line:#e4ddcd; --ink:#26211a; --dim:#8a8172;
+  --red:#d43518; --red-deep:#9e2408; --accent:#b3451f; --sel:#f6e7cb; --hover:#f6f1e6;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0; color:var(--ink);
+  font:14px/1.5 "Segoe UI", system-ui, -apple-system, sans-serif;
+  background:
+    radial-gradient(1100px 500px at 70% -10%, #fbf8f1 0%, rgba(251,248,241,0) 60%),
+    linear-gradient(180deg, #f3efe7 0%, var(--bg) 40%, #e9e2d5 100%);
+  min-height:100vh;
+}
+.mock-banner {
+  background:#26211a; color:#f3efe7; font-size:12px; text-align:center; padding:6px 10px;
+}
+.mock-banner a { color:#ffb59f; }
+header {
+  position:sticky; top:0; z-index:10;
+  display:flex; align-items:center; gap:14px; padding:12px 22px;
+  background:rgba(255,253,248,.82); backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.logo {
+  width:38px; height:38px; border-radius:11px; display:flex; align-items:center; justify-content:center;
+  font-size:19px; color:#fff; background:linear-gradient(145deg,#ef5a3a,#c22f10);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.35), 0 3px 8px rgba(158,36,8,.35);
+}
+header h1 { font-size:18px; margin:0; font-weight:800; letter-spacing:.2px; }
+header .sub { font-size:12px; color:var(--dim); }
+header .spacer { margin-left:auto; }
+.pill {
+  padding:6px 14px; border-radius:999px; border:1px solid var(--line); background:#fff;
+  font-size:12.5px; font-weight:600; color:var(--ink); cursor:pointer;
+  box-shadow:0 1px 2px rgba(60,50,30,.08);
+}
+.pill:hover { border-color:var(--accent); color:var(--accent); }
+main {
+  display:grid; grid-template-columns:290px minmax(0,1fr) 320px; gap:18px;
+  padding:20px; max-width:1440px; margin:0 auto;
+}
+.panel {
+  background:var(--panel); border:1px solid var(--line); border-radius:16px;
+  box-shadow:0 1px 2px rgba(70,58,36,.05), 0 16px 40px -18px rgba(70,58,36,.28);
+}
+.panel h2 {
+  display:flex; align-items:center; gap:8px;
+  font-size:11.5px; text-transform:uppercase; letter-spacing:1.2px; color:var(--dim);
+  margin:0; padding:14px 16px 10px; border-bottom:1px solid var(--line);
+}
+.panel h2::before { content:""; width:8px; height:8px; border-radius:2px; background:var(--red); }
+.search { padding:10px 14px; }
+.search input {
+  width:100%; padding:9px 12px; border:1px solid var(--line); border-radius:10px;
+  font-size:13px; background:#fff; color:var(--ink); outline:none;
+}
+.search input:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(179,69,31,.12); }
+.tool-item { display:flex; align-items:center; gap:10px; padding:8px 14px; cursor:pointer; border-radius:12px; margin:2px 8px; }
+.tool-item:hover { background:var(--hover); }
+.tool-item.selected { background:var(--sel); outline:1px solid var(--accent); }
+.tool-ico {
+  width:32px; height:32px; border-radius:9px; flex:none;
+  display:flex; align-items:center; justify-content:center; font-size:16px; color:#fff;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.3), 0 2px 4px rgba(0,0,0,.18);
+}
+.tool-name { font-weight:600; font-size:13px; }
+.tool-meta { font-size:11px; color:var(--dim); }
+#preview .inner { padding:16px; }
+#knifeWrap { display:flex; gap:18px; }
+.previewCol { flex:1; min-width:0; }
+.pvHead {
+  display:flex; align-items:center; justify-content:space-between;
+  font-size:11px; color:var(--dim); font-weight:700; text-transform:uppercase; letter-spacing:1px;
+  padding:0 4px 8px;
+}
+.pvHead button {
+  font-size:11px; padding:3px 10px; border:1px solid var(--line); background:#fff;
+  color:var(--dim); border-radius:999px; cursor:pointer;
+}
+.pvHead button:hover { border-color:var(--accent); color:var(--accent); }
+#knifeWrap svg { width:100%; height:auto; display:block; }
+#stackStats { display:flex; justify-content:center; gap:12px; padding:14px 0 4px; flex-wrap:wrap; }
+.stat {
+  display:inline-flex; align-items:baseline; gap:6px; background:#fff;
+  border:1px solid var(--line); border-radius:12px; padding:8px 16px;
+  box-shadow:0 1px 2px rgba(70,58,36,.06);
+}
+.stat .k { font-size:10px; color:var(--dim); text-transform:uppercase; letter-spacing:1px; font-weight:700; }
+.stat .v { font-size:20px; font-weight:800; font-variant-numeric:tabular-nums; }
+.stat .u { font-size:11px; color:var(--dim); }
+.toolbar { display:flex; gap:8px; padding:12px 14px 4px; flex-wrap:wrap; }
+.toolbar button {
+  padding:7px 14px; border:1px solid var(--line); background:#fff; color:var(--ink);
+  border-radius:999px; cursor:pointer; font-size:12.5px; font-weight:600;
+  box-shadow:0 1px 2px rgba(70,58,36,.06);
+}
+.toolbar button:hover { border-color:var(--accent); color:var(--accent); transform:translateY(-1px); }
+.layer-row {
+  display:flex; align-items:center; gap:8px; padding:9px 14px; border-bottom:1px solid var(--line);
+}
+.layer-row:last-child { border-bottom:none; }
+.layer-row .lbl { font-size:12.5px; font-weight:600; width:110px; flex:none; }
+.chip {
+  display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:600; color:#fff;
+  padding:3px 9px; border-radius:999px; box-shadow:inset 0 1px 0 rgba(255,255,255,.25), 0 1px 2px rgba(0,0,0,.2);
+}
+.layer-row .ctl { margin-left:auto; display:flex; gap:4px; }
+.layer-row .ctl button {
+  width:22px; height:22px; border-radius:7px; border:1px solid var(--line); background:#fff;
+  color:var(--dim); font-size:10px; cursor:pointer;
+}
+.match { display:flex; justify-content:space-between; font-size:13px; padding:7px 14px; }
+.match .pct { color:var(--dim); font-weight:700; font-variant-numeric:tabular-nums; }
+.match.exact { background:#e9f4e6; font-weight:700; }
+.shop-item { display:flex; justify-content:space-between; padding:8px 14px; font-size:13px; border-bottom:1px solid var(--line); }
+.shop-item .take { display:block; font-size:11px; color:var(--dim); }
+.shop-total { display:flex; justify-content:space-between; padding:10px 14px; font-weight:800; font-size:14px; }
+footer { text-align:center; color:var(--dim); font-size:11px; padding:14px; }
+@media (max-width:1100px) { main { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<div class="mock-banner">🎨 Style proposal <b>1 / 4 — « Atelier »</b> (rendu réaliste, mise en page douce) — maquette statique · <a href="index.html">← galerie des styles</a></div>
+<header>
+  <div class="logo">🔪</div>
+  <div>
+    <h1>91mm SAK Builder</h1>
+    <div class="sub">Assemble a custom Victorinox 91mm Swiss Army Knife, layer by layer — data from SAKwiki</div>
+  </div>
+  <div class="spacer"></div>
+  <button class="pill">◐ theme</button>
+</header>
+<main>
+  <section class="panel">
+    <h2>Tools</h2>
+    <div class="search"><input type="search" placeholder="Search a tool… e.g. corkscrew" readonly></div>
+    <div id="toolList">
+      <div class="tool-item selected"><div class="tool-ico" style="background:#c0392b">🔪</div><div><div class="tool-name">Large Blade</div><div class="tool-meta">Front · blade</div></div></div>
+      <div class="tool-item"><div class="tool-ico" style="background:#c0392b">🔪</div><div><div class="tool-name">Small Blade</div><div class="tool-meta">Front · blade</div></div></div>
+      <div class="tool-item"><div class="tool-ico" style="background:#2471a3">🍺</div><div><div class="tool-name">Cap-lifter / Bottle Opener</div><div class="tool-meta">Front · opener</div></div></div>
+      <div class="tool-item"><div class="tool-ico" style="background:#2471a3">🥫</div><div><div class="tool-name">Can Opener</div><div class="tool-meta">Front · opener</div></div></div>
+      <div class="tool-item"><div class="tool-ico" style="background:#6c3483">✂️</div><div><div class="tool-name">Scissors</div><div class="tool-meta">Front · scissor</div></div></div>
+      <div class="tool-item"><div class="tool-ico" style="background:#8d3b3b">🍾</div><div><div class="tool-name">Corkscrew</div><div class="tool-meta">Back · corkscrew</div></div></div>
+    </div>
+  </section>
+
+  <section class="panel" id="preview">
+    <h2>Preview</h2>
+    <div class="inner">
+      <div id="knifeWrap">
+        <div class="previewCol">
+          <div class="pvHead"><span>Front side</span><button>↺ order</button></div>
+          <svg viewBox="0 0 420 210" role="img" aria-label="Knife front view">
+            <defs>
+              <linearGradient id="scaleG" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#f0603f"/><stop offset=".45" stop-color="#d43518"/><stop offset="1" stop-color="#9e2408"/>
+              </linearGradient>
+              <linearGradient id="steelG" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#f6f6f8"/><stop offset=".35" stop-color="#d9d9dd"/><stop offset=".62" stop-color="#c0c1c7"/><stop offset="1" stop-color="#eaeaed"/>
+              </linearGradient>
+              <radialGradient id="rivetG" cx=".35" cy=".3" r=".95">
+                <stop offset="0" stop-color="#ffffff"/><stop offset=".55" stop-color="#cfd0d5"/><stop offset="1" stop-color="#7f8087"/>
+              </radialGradient>
+              <linearGradient id="ringG" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#ececf0"/><stop offset=".5" stop-color="#97989f"/><stop offset="1" stop-color="#d6d7dc"/>
+              </linearGradient>
+              <linearGradient id="sheen" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#ffffff" stop-opacity=".3"/><stop offset=".5" stop-color="#ffffff" stop-opacity="0"/>
+              </linearGradient>
+              <filter id="knifeShadow" x="-20%" y="-20%" width="140%" height="160%">
+                <feDropShadow dx="0" dy="7" stdDeviation="7" flood-color="#3a2c1c" flood-opacity=".3"/>
+              </filter>
+              <filter id="blur6"><feGaussianBlur stdDeviation="6"/></filter>
+              <radialGradient id="halo" cx=".5" cy=".45" r=".7">
+                <stop offset="0" stop-color="#ffffff" stop-opacity=".95"/><stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+            <ellipse cx="210" cy="102" rx="205" ry="98" fill="url(#halo)"/>
+            <ellipse cx="210" cy="184" rx="158" ry="9" fill="#4a3826" opacity=".16" filter="url(#blur6)"/>
+            <g filter="url(#knifeShadow)">
+              <!-- top scale -->
+              <rect x="30" y="33" width="360" height="20" rx="7" fill="url(#scaleG)" stroke="#7e1d0a" stroke-width=".8"/>
+              <rect x="30" y="33" width="360" height="7" rx="3.5" fill="#fff" opacity=".22"/>
+              <rect x="52" y="37" width="32" height="12" rx="2.5" fill="#fff" opacity=".96"/>
+              <rect x="65.5" y="39" width="5" height="8" fill="#d43518"/>
+              <rect x="64" y="41.5" width="8" height="3" fill="#d43518"/>
+              <circle cx="40" cy="43" r="3.4" fill="url(#rivetG)" stroke="#71727a" stroke-width=".6"/>
+              <circle cx="380" cy="43" r="3.4" fill="url(#rivetG)" stroke="#71727a" stroke-width=".6"/>
+              <!-- bands -->
+              <g font-family="Segoe UI, system-ui, sans-serif">
+                <text x="210" y="53" font-size="7.5" text-anchor="middle" fill="#9a8f79" letter-spacing="1.5">BLADE LAYER</text>
+                <rect x="30" y="55" width="360" height="26" rx="3" fill="url(#steelG)" stroke="#8f9097" stroke-width=".7"/>
+                <rect x="30" y="55" width="360" height="7" rx="3" fill="#fff" opacity=".4"/>
+                <rect x="38" y="59" width="78" height="18" rx="9" fill="#c0392b" stroke="rgba(0,0,0,.3)" stroke-width=".6"/>
+                <rect x="38" y="59" width="78" height="18" rx="9" fill="url(#sheen)"/>
+                <text x="46" y="72.5" font-size="9.5" fill="#fff" font-weight="600">🔪 Large Blade</text>
+                <rect x="120" y="59" width="91" height="18" rx="9" fill="#c0392b" stroke="rgba(0,0,0,.3)" stroke-width=".6"/>
+                <rect x="120" y="59" width="91" height="18" rx="9" fill="url(#sheen)"/>
+                <text x="128" y="72.5" font-size="9.5" fill="#fff" font-weight="600">🔪 Small Blade</text>
+
+                <text x="210" y="82" font-size="7.5" text-anchor="middle" fill="#9a8f79" letter-spacing="1.5">OPENERS LAYER</text>
+                <rect x="30" y="84" width="360" height="26" rx="3" fill="url(#steelG)" stroke="#8f9097" stroke-width=".7"/>
+                <rect x="30" y="84" width="360" height="7" rx="3" fill="#fff" opacity=".4"/>
+                <rect x="38" y="88" width="92" height="18" rx="9" fill="#2471a3" stroke="rgba(0,0,0,.3)" stroke-width=".6"/>
+                <rect x="38" y="88" width="92" height="18" rx="9" fill="url(#sheen)"/>
+                <text x="46" y="101.5" font-size="9.5" fill="#fff" font-weight="600">🍺 Cap-lifter / B…</text>
+                <rect x="134" y="88" width="85" height="18" rx="9" fill="#2471a3" stroke="rgba(0,0,0,.3)" stroke-width=".6"/>
+                <rect x="134" y="88" width="85" height="18" rx="9" fill="url(#sheen)"/>
+                <text x="142" y="101.5" font-size="9.5" fill="#fff" font-weight="600">🥫 Can Opener</text>
+
+                <text x="210" y="111" font-size="7.5" text-anchor="middle" fill="#9a8f79" letter-spacing="1.5">SCISSORS LAYER</text>
+                <rect x="30" y="113" width="360" height="26" rx="3" fill="url(#steelG)" stroke="#8f9097" stroke-width=".7"/>
+                <rect x="30" y="113" width="360" height="7" rx="3" fill="#fff" opacity=".4"/>
+                <rect x="38" y="117" width="66" height="18" rx="9" fill="#6c3483" stroke="rgba(0,0,0,.3)" stroke-width=".6"/>
+                <rect x="38" y="117" width="66" height="18" rx="9" fill="url(#sheen)"/>
+                <text x="46" y="130.5" font-size="9.5" fill="#fff" font-weight="600">✂️ Scissors</text>
+              </g>
+              <!-- bottom scale -->
+              <rect x="30" y="141" width="360" height="20" rx="7" fill="url(#scaleG)" stroke="#7e1d0a" stroke-width=".8"/>
+              <rect x="30" y="141" width="360" height="7" rx="3.5" fill="#fff" opacity=".22"/>
+              <circle cx="40" cy="151" r="3.4" fill="url(#rivetG)" stroke="#71727a" stroke-width=".6"/>
+              <circle cx="380" cy="151" r="3.4" fill="url(#rivetG)" stroke="#71727a" stroke-width=".6"/>
+              <rect x="33" y="158" width="10" height="7" rx="2" fill="#97989f"/>
+              <circle cx="38" cy="176" r="8" fill="none" stroke="url(#ringG)" stroke-width="3"/>
+            </g>
+          </svg>
+        </div>
+        <div class="previewCol">
+          <div class="pvHead"><span>Back side</span></div>
+          <svg viewBox="0 0 420 210" role="img" aria-label="Knife back view">
+            <defs>
+              <linearGradient id="scaleG2" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#f0603f"/><stop offset=".45" stop-color="#d43518"/><stop offset="1" stop-color="#9e2408"/>
+              </linearGradient>
+              <linearGradient id="steelG2" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#f6f6f8"/><stop offset=".35" stop-color="#d9d9dd"/><stop offset=".62" stop-color="#c0c1c7"/><stop offset="1" stop-color="#eaeaed"/>
+              </linearGradient>
+              <radialGradient id="rivetG2" cx=".35" cy=".3" r=".95">
+                <stop offset="0" stop-color="#ffffff"/><stop offset=".55" stop-color="#cfd0d5"/><stop offset="1" stop-color="#7f8087"/>
+              </radialGradient>
+              <linearGradient id="sheen2" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#ffffff" stop-opacity=".3"/><stop offset=".5" stop-color="#ffffff" stop-opacity="0"/>
+              </linearGradient>
+              <filter id="knifeShadow2" x="-20%" y="-20%" width="140%" height="160%">
+                <feDropShadow dx="0" dy="7" stdDeviation="7" flood-color="#3a2c1c" flood-opacity=".3"/>
+              </filter>
+              <filter id="blur6b"><feGaussianBlur stdDeviation="6"/></filter>
+              <radialGradient id="halo2" cx=".5" cy=".45" r=".7">
+                <stop offset="0" stop-color="#ffffff" stop-opacity=".95"/><stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+            <ellipse cx="210" cy="102" rx="205" ry="98" fill="url(#halo2)"/>
+            <ellipse cx="210" cy="184" rx="158" ry="9" fill="#4a3826" opacity=".16" filter="url(#blur6b)"/>
+            <g filter="url(#knifeShadow2)" font-family="Segoe UI, system-ui, sans-serif">
+              <rect x="30" y="33" width="360" height="20" rx="7" fill="url(#scaleG2)" stroke="#7e1d0a" stroke-width=".8"/>
+              <rect x="30" y="33" width="360" height="7" rx="3.5" fill="#fff" opacity=".22"/>
+              <circle cx="40" cy="43" r="3.4" fill="url(#rivetG2)" stroke="#71727a" stroke-width=".6"/>
+              <circle cx="380" cy="43" r="3.4" fill="url(#rivetG2)" stroke="#71727a" stroke-width=".6"/>
+
+              <text x="210" y="53" font-size="7.5" text-anchor="middle" fill="#9a8f79" letter-spacing="1.5">BLADE LAYER</text>
+              <rect x="30" y="55" width="360" height="26" rx="3" fill="url(#steelG2)" stroke="#8f9097" stroke-width=".7"/>
+              <rect x="30" y="55" width="360" height="7" rx="3" fill="#fff" opacity=".4"/>
+              <rect x="38" y="59" width="72" height="18" rx="9" fill="#8d3b3b" stroke="rgba(0,0,0,.3)" stroke-width=".6"/>
+              <rect x="38" y="59" width="72" height="18" rx="9" fill="url(#sheen2)"/>
+              <text x="46" y="72.5" font-size="9.5" fill="#fff" font-weight="600">🍾 Corkscrew</text>
+
+              <text x="210" y="82" font-size="7.5" text-anchor="middle" fill="#9a8f79" letter-spacing="1.5">OPENERS LAYER</text>
+              <rect x="30" y="84" width="360" height="26" rx="3" fill="url(#steelG2)" stroke="#8f9097" stroke-width=".7"/>
+              <rect x="30" y="84" width="360" height="7" rx="3" fill="#fff" opacity=".4"/>
+              <rect x="38" y="88" width="97" height="18" rx="9" fill="#5d6d7e" stroke="rgba(0,0,0,.3)" stroke-width=".6"/>
+              <rect x="38" y="88" width="97" height="18" rx="9" fill="url(#sheen2)"/>
+              <text x="46" y="101.5" font-size="9.5" fill="#fff" font-weight="600">🪡 Reamer / Awl</text>
+
+              <text x="210" y="111" font-size="7.5" text-anchor="middle" fill="#9a8f79" letter-spacing="1.5">SCISSORS LAYER</text>
+              <rect x="30" y="113" width="360" height="26" rx="3" fill="url(#steelG2)" stroke="#8f9097" stroke-width=".7"/>
+              <rect x="30" y="113" width="360" height="7" rx="3" fill="#fff" opacity=".4"/>
+              <rect x="38" y="117" width="104" height="18" rx="9" fill="#943126" stroke="rgba(0,0,0,.3)" stroke-width=".6"/>
+              <rect x="38" y="117" width="104" height="18" rx="9" fill="url(#sheen2)"/>
+              <text x="46" y="130.5" font-size="9.5" fill="#fff" font-weight="600">🪝 Multipurpose H…</text>
+
+              <rect x="30" y="141" width="360" height="20" rx="7" fill="url(#scaleG2)" stroke="#7e1d0a" stroke-width=".8"/>
+              <rect x="30" y="141" width="360" height="7" rx="3.5" fill="#fff" opacity=".22"/>
+              <circle cx="40" cy="151" r="3.4" fill="url(#rivetG2)" stroke="#71727a" stroke-width=".6"/>
+              <circle cx="380" cy="151" r="3.4" fill="url(#rivetG2)" stroke="#71727a" stroke-width=".6"/>
+            </g>
+          </svg>
+        </div>
+      </div>
+      <div id="stackStats">
+        <span class="stat"><span class="k">Thickness</span><span class="v">17.2</span><span class="u">mm</span></span>
+        <span class="stat"><span class="k">Weight</span><span class="v">84.1</span><span class="u">g</span></span>
+        <span class="stat"><span class="k">Layers</span><span class="v">3</span><span class="u">· 6 tools</span></span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="panel">
+      <h2>Layers</h2>
+      <div class="toolbar">
+        <button>⤓ Load from model…</button><button>⇩ Export</button><button>⇧ Import</button><button>Clear</button>
+      </div>
+      <div class="layer-row"><span class="lbl">Blade layer</span><span class="chip" style="background:#c0392b">🔪 Large Blade</span><span class="chip" style="background:#c0392b">🔪 Small Blade</span><span class="chip" style="background:#8d3b3b">🍾 Corkscrew</span><span class="ctl"><button>▲</button><button>▼</button><button>✕</button></span></div>
+      <div class="layer-row"><span class="lbl">Openers layer</span><span class="chip" style="background:#2471a3">🍺 Cap-lifter</span><span class="chip" style="background:#2471a3">🥫 Can Opener</span><span class="chip" style="background:#5d6d7e">🪡 Reamer</span><span class="ctl"><button>▲</button><button>▼</button><button>✕</button></span></div>
+      <div class="layer-row"><span class="lbl">Scissors layer</span><span class="chip" style="background:#6c3483">✂️ Scissors</span><span class="chip" style="background:#943126">🪝 Hook</span><span class="ctl"><button>▲</button><button>▼</button><button>✕</button></span></div>
+    </div>
+    <div class="panel" style="margin-top:16px">
+      <h2>Matching models</h2>
+      <div class="match exact"><span>⭐ Climber</span><span class="pct">100%</span></div>
+      <div class="match"><span>Voyager</span><span class="pct">89%</span></div>
+      <div class="match"><span>Explorer</span><span class="pct">89%</span></div>
+      <div class="match"><span>Super Tinker</span><span class="pct">78%</span></div>
+    </div>
+    <div class="panel" style="margin-top:16px">
+      <h2>Shopping list</h2>
+      <div class="shop-item"><span>Spartan<span class="take">blade + openers layers</span></span><span>€27</span></div>
+      <div class="shop-item"><span>Compact<span class="take">scissors + hook layer</span></span><span>€47</span></div>
+      <div class="shop-total"><span>Total</span><span>€74</span></div>
+    </div>
+  </section>
+</main>
+<footer>Data: SAKwiki (91mm layer tables &amp; model pages) — 99 reference models, 36 tools, 44 layer configurations. · Style mockup « Atelier »</footer>
+</body>
+</html>

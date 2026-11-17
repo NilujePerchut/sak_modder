@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Style proposal 4 — « Tactical » · 91mm SAK Builder</title>
+<style>
+:root {
+  --bg:#14161a; --panel:#1b1e24; --line:#343a43; --ink:#e8e6df; --dim:#8b9099;
+  --amber:#f5a623; --red:#7a1f14; --sel:#2a2418;
+  --stencil:"Arial Narrow","Helvetica Neue Condensed",Impact,"Segoe UI",sans-serif;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0; color:var(--ink);
+  font:14px/1.5 "Segoe UI", system-ui, sans-serif;
+  background-color:var(--bg);
+  background-image:repeating-linear-gradient(45deg, rgba(255,255,255,.018) 0 2px, transparent 2px 9px);
+  min-height:100vh;
+}
+.mock-banner { background:#0c0d10; color:var(--amber); font:700 12px var(--stencil); text-align:center; padding:7px 10px; letter-spacing:2px; text-transform:uppercase; border-bottom:2px solid var(--amber); }
+.mock-banner a { color:#ffd58a; }
+header {
+  display:flex; align-items:center; gap:14px; padding:13px 22px;
+  background:linear-gradient(180deg,#101216,#0c0d10); border-bottom:2px solid var(--amber);
+}
+.logo {
+  width:38px; height:38px; background:var(--red); border:2px solid #000;
+  display:flex; align-items:center; justify-content:center; font-size:18px;
+  box-shadow:3px 3px 0 #000;
+}
+header h1 { font:800 21px var(--stencil); margin:0; letter-spacing:2.5px; text-transform:uppercase; color:#fff; }
+header .sub { font:700 10.5px var(--stencil); color:var(--dim); letter-spacing:1.5px; text-transform:uppercase; }
+header .spacer { margin-left:auto; }
+.pill {
+  padding:7px 14px; border:2px solid var(--amber); background:transparent; color:var(--amber);
+  font:700 12px var(--stencil); letter-spacing:2px; text-transform:uppercase; cursor:pointer;
+  box-shadow:3px 3px 0 #000;
+}
+.pill:hover { background:var(--amber); color:#111; }
+main { display:grid; grid-template-columns:290px minmax(0,1fr) 320px; gap:16px; padding:18px; max-width:1440px; margin:0 auto; }
+.panel {
+  background:var(--panel); border:1px solid var(--line); border-radius:4px;
+  box-shadow:5px 5px 0 #000;
+  background-image:repeating-linear-gradient(-45deg, rgba(255,255,255,.012) 0 2px, transparent 2px 8px);
+}
+.panel h2 {
+  font:800 12px var(--stencil); text-transform:uppercase; letter-spacing:2.5px; color:var(--amber);
+  margin:0; padding:12px 14px 10px; border-bottom:1px solid var(--line); background:rgba(0,0,0,.25);
+}
+.search { padding:10px 14px; }
+.search input {
+  width:100%; padding:9px 12px; border:1px solid var(--line); border-radius:3px;
+  font-size:13px; background:#101216; color:var(--ink); outline:none;
+}
+.search input:focus { border-color:var(--amber); box-shadow:0 0 0 2px rgba(245,166,35,.2); }
+.tool-item { display:flex; align-items:center; gap:10px; padding:8px 14px; cursor:pointer; border-left:3px solid transparent; }
+.tool-item:hover { background:rgba(245,166,35,.06); }
+.tool-item.selected { background:var(--sel); border-left-color:var(--amber); }
+.tool-ico {
+  width:32px; height:32px; border-radius:3px; flex:none; display:flex; align-items:center; justify-content:center;
+  font-size:16px; color:#fff; border:1.5px solid #000; box-shadow:2px 2px 0 #000;
+}
+.tool-name { font:700 13px var(--stencil); letter-spacing:.6px; text-transform:uppercase; }
+.tool-meta { font-size:10.5px; color:var(--dim); text-transform:uppercase; letter-spacing:1px; }
+#preview .inner { padding:14px; }
+#knifeWrap { display:flex; gap:16px; }
+.previewCol { flex:1; min-width:0; background:#101216; border:1px solid var(--line); border-radius:3px; padding:10px; }
+.pvHead {
+  display:flex; align-items:center; justify-content:space-between;
+  font:800 10.5px var(--stencil); color:var(--dim); text-transform:uppercase; letter-spacing:2px; padding:0 2px 8px;
+}
+.pvHead button { font:700 10px var(--stencil); letter-spacing:1px; padding:3px 9px; border:1px solid var(--line); background:transparent; color:var(--dim); border-radius:2px; cursor:pointer; text-transform:uppercase; }
+.pvHead button:hover { color:var(--amber); border-color:var(--amber); }
+#knifeWrap svg { width:100%; height:auto; display:block; }
+#stackStats { display:flex; justify-content:center; gap:12px; padding:14px 0 2px; flex-wrap:wrap; }
+.stat { display:inline-flex; align-items:baseline; gap:6px; background:#101216; border:1px solid var(--line); border-radius:3px; padding:8px 14px; box-shadow:3px 3px 0 #000; }
+.stat .k { font:800 9.5px var(--stencil); color:var(--dim); text-transform:uppercase; letter-spacing:2px; }
+.stat .v { font:800 19px var(--stencil); color:var(--amber); letter-spacing:1px; font-variant-numeric:tabular-nums; }
+.stat .u { font-size:11px; color:var(--dim); }
+.toolbar { display:flex; gap:8px; padding:12px 14px 4px; flex-wrap:wrap; }
+.toolbar button { padding:7px 12px; border:1px solid var(--line); background:#101216; color:var(--ink); border-radius:3px; cursor:pointer; font:700 11px var(--stencil); letter-spacing:1.5px; text-transform:uppercase; box-shadow:2px 2px 0 #000; }
+.toolbar button:hover { border-color:var(--amber); color:var(--amber); }
+.layer-row { display:flex; align-items:center; gap:7px; padding:10px 14px; border-bottom:1px solid var(--line); flex-wrap:wrap; }
+.layer-row:last-child { border-bottom:none; }
+.layer-row .lbl { font:800 11.5px var(--stencil); letter-spacing:1.5px; text-transform:uppercase; width:112px; flex:none; }
+.chip {
+  display:inline-flex; align-items:center; gap:5px; font:700 10px var(--stencil); letter-spacing:1px; text-transform:uppercase;
+  color:#fff; padding:4px 8px; border-radius:2px; border:1.5px solid #000; box-shadow:2px 2px 0 #000;
+}
+.layer-row .ctl { margin-left:auto; display:flex; gap:4px; }
+.layer-row .ctl button { width:22px; height:22px; border-radius:2px; border:1px solid var(--line); background:#101216; color:var(--dim); font-size:10px; cursor:pointer; }
+.layer-row .ctl button:hover { color:var(--amber); border-color:var(--amber); }
+.match { display:flex; justify-content:space-between; font:700 12.5px var(--stencil); letter-spacing:.8px; text-transform:uppercase; padding:8px 14px; }
+.match .pct { color:var(--dim); }
+.match.exact { background:rgba(245,166,35,.12); color:var(--amber); box-shadow:inset 3px 0 0 var(--amber); }
+.shop-item { display:flex; justify-content:space-between; padding:9px 14px; font-size:13px; border-bottom:1px solid var(--line); }
+.shop-item .take { display:block; font-size:10.5px; color:var(--dim); text-transform:uppercase; letter-spacing:1px; }
+.shop-total { display:flex; justify-content:space-between; padding:11px 14px; font:800 15px var(--stencil); letter-spacing:1.5px; color:var(--amber); text-transform:uppercase; }
+footer { text-align:center; color:var(--dim); font:700 10.5px var(--stencil); letter-spacing:2px; text-transform:uppercase; padding:14px; }
+@media (max-width:1100px) { main { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<div class="mock-banner">⚙ Style proposal 4/4 — « Tactical » — sombre rugueux, ombres dures · <a href="index.html">← galerie des styles</a></div>
+<header>
+  <div class="logo">🔪</div>
+  <div>
+    <h1>91mm SAK Builder</h1>
+    <div class="sub">Custom Victorinox 91mm stackup — data: sakwiki.com</div>
+  </div>
+  <div class="spacer"></div>
+  <button class="pill">Theme ◐</button>
+</header>
+<main>
+  <section class="panel">
+    <h2>// Arsenal</h2>
+    <div class="search"><input type="search" placeholder="SEARCH TOOL… E.G. CORKSCREW" readonly></div>
+    <div>
+      <div class="tool-item selected"><div class="tool-ico" style="background:#8a2a1e">🔪</div><div><div class="tool-name">Large Blade</div><div class="tool-meta">Front · Blade</div></div></div>
+      <div class="tool-item"><div class="tool-ico" style="background:#1f4e79">🍺</div><div><div class="tool-name">Cap-lifter</div><div class="tool-meta">Front · Opener</div></div></div>
+      <div class="tool-item"><div class="tool-ico" style="background:#5b2d6e">✂️</div><div><div class="tool-name">Scissors</div><div class="tool-meta">Front · Scissor</div></div></div>
+      <div class="tool-item"><div class="tool-ico" style="background:#7a1f14">🍾</div><div><div class="tool-name">Corkscrew</div><div class="tool-meta">Back · Corkscrew</div></div></div>
+      <div class="tool-item"><div class="tool-ico" style="background:#4a5560">🪡</div><div><div class="tool-name">Reamer / Awl</div><div class="tool-meta">Back · Punch</div></div></div>
+    </div>
+  </section>
+
+  <section class="panel" id="preview">
+    <h2>// Preview — field render</h2>
+    <div class="inner">
+      <div id="knifeWrap">
+        <div class="previewCol">
+          <div class="pvHead"><span>▸ FRONT</span><button>↺ order</button></div>
+          <svg viewBox="0 0 420 212" font-family="Arial Narrow, Impact, sans-serif">
+            <defs>
+              <linearGradient id="tScale" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#8a2418"/><stop offset=".5" stop-color="#5f150d"/><stop offset="1" stop-color="#33100a"/>
+              </linearGradient>
+              <linearGradient id="tSteel" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#4b4f57"/><stop offset=".5" stop-color="#33363c"/><stop offset="1" stop-color="#43474e"/>
+              </linearGradient>
+              <pattern id="knurl" width="5" height="5" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+                <rect width="5" height="5" fill="transparent"/>
+                <line x1="0" y1="0" x2="0" y2="5" stroke="rgba(0,0,0,.4)" stroke-width="1.2"/>
+              </pattern>
+              <radialGradient id="tRivet" cx=".35" cy=".3" r=".95">
+                <stop offset="0" stop-color="#c9cad0"/><stop offset=".6" stop-color="#6f7076"/><stop offset="1" stop-color="#3c3d42"/>
+              </radialGradient>
+            </defs>
+            <!-- hard shadow -->
+            <g transform="translate(6,7)" opacity=".55" fill="#000">
+              <rect x="30" y="26" width="360" height="18" rx="6"/>
+              <rect x="30" y="48" width="360" height="24"/>
+              <rect x="30" y="76" width="360" height="24"/>
+              <rect x="30" y="104" width="360" height="24"/>
+              <rect x="30" y="132" width="360" height="18" rx="6"/>
+            </g>
+            <!-- knife -->
+            <g stroke="#000" stroke-width="1.4">
+              <rect x="30" y="26" width="360" height="18" rx="6" fill="url(#tScale)"/>
+              <rect x="30" y="26" width="360" height="18" rx="6" fill="url(#knurl)"/>
+              <rect x="30" y="48" width="360" height="24" fill="url(#tSteel)"/>
+              <rect x="30" y="76" width="360" height="24" fill="url(#tSteel)"/>
+              <rect x="30" y="104" width="360" height="24" fill="url(#tSteel)"/>
+              <rect x="30" y="132" width="360" height="18" rx="6" fill="url(#tScale)"/>
+              <rect x="30" y="132" width="360" height="18" rx="6" fill="url(#knurl)"/>
+            </g>
+            <!-- emblem plate -->
+            <rect x="50" y="30" width="30" height="10" rx="1.5" fill="#e8e6df" stroke="#000" stroke-width="1"/>
+            <rect x="62.5" y="31.5" width="5" height="7" fill="#7a1f14"/>
+            <rect x="61" y="34" width="8" height="2.6" fill="#7a1f14"/>
+            <!-- rivets + lanyard hole -->
+            <circle cx="40" cy="35" r="3.2" fill="url(#tRivet)" stroke="#000" stroke-width="1"/>
+            <circle cx="380" cy="35" r="3.2" fill="url(#tRivet)" stroke="#000" stroke-width="1"/>
+            <circle cx="40" cy="141" r="3.2" fill="url(#tRivet)" stroke="#000" stroke-width="1"/>
+            <circle cx="380" cy="141" r="3.2" fill="url(#tRivet)" stroke="#000" stroke-width="1"/>
+            <circle cx="370" cy="141" r="3.6" fill="#101216" stroke="#000" stroke-width="1.2"/>
+            <!-- keyring -->
+            <circle cx="38" cy="166" r="8" fill="none" stroke="#565a61" stroke-width="3.4"/>
+            <!-- band labels -->
+            <g font-size="8" fill="#f5a623" text-anchor="middle" letter-spacing="2" font-weight="700">
+              <text x="210" y="45">LAYER 01 · BLADE</text>
+              <text x="210" y="73">LAYER 02 · OPENERS</text>
+              <text x="210" y="101">LAYER 03 · SCISSORS</text>
+            </g>
+            <!-- chips -->
+            <g font-size="9.5" font-weight="700" fill="#fff" stroke="#000" stroke-width="1.6">
+              <rect x="38" y="52" width="82" height="16" fill="#8a2a1e"/><text x="44" y="63.5" stroke="none">🔪 LARGE BLADE</text>
+              <rect x="124" y="52" width="82" height="16" fill="#8a2a1e"/><text x="130" y="63.5" stroke="none">🔪 SMALL BLADE</text>
+              <rect x="38" y="80" width="106" height="16" fill="#1f4e79"/><text x="44" y="91.5" stroke="none">🍺 CAP-LIFTER…</text>
+              <rect x="148" y="80" width="78" height="16" fill="#1f4e79"/><text x="154" y="91.5" stroke="none">🥫 CAN OPENER</text>
+              <rect x="38" y="108" width="68" height="16" fill="#5b2d6e"/><text x="44" y="119.5" stroke="none">✂️ SCISSORS</text>
+            </g>
+          </svg>
+        </div>
+        <div class="previewCol">
+          <div class="pvHead"><span>▸ BACK</span></div>
+          <svg viewBox="0 0 420 212" font-family="Arial Narrow, Impact, sans-serif">
+            <g transform="translate(6,7)" opacity=".55" fill="#000">
+              <rect x="30" y="26" width="360" height="18" rx="6"/>
+              <rect x="30" y="48" width="360" height="24"/>
+              <rect x="30" y="76" width="360" height="24"/>
+              <rect x="30" y="104" width="360" height="24"/>
+              <rect x="30" y="132" width="360" height="18" rx="6"/>
+            </g>
+            <g stroke="#000" stroke-width="1.4">
+              <rect x="30" y="26" width="360" height="18" rx="6" fill="url(#tScale)"/>
+              <rect x="30" y="26" width="360" height="18" rx="6" fill="url(#knurl)"/>
+              <rect x="30" y="48" width="360" height="24" fill="url(#tSteel)"/>
+              <rect x="30" y="76" width="360" height="24" fill="url(#tSteel)"/>
+              <rect x="30" y="104" width="360" height="24" fill="url(#tSteel)"/>
+              <rect x="30" y="132" width="360" height="18" rx="6" fill="url(#tScale)"/>
+              <rect x="30" y="132" width="360" height="18" rx="6" fill="url(#knurl)"/>
+            </g>
+            <circle cx="40" cy="35" r="3.2" fill="url(#tRivet)" stroke="#000" stroke-width="1"/>
+            <circle cx="380" cy="35" r="3.2" fill="url(#tRivet)" stroke="#000" stroke-width="1"/>
+            <circle cx="40" cy="141" r="3.2" fill="url(#tRivet)" stroke="#000" stroke-width="1"/>
+            <circle cx="380" cy="141" r="3.2" fill="url(#tRivet)" stroke="#000" stroke-width="1"/>
+            <g font-size="8" fill="#f5a623" text-anchor="middle" letter-spacing="2" font-weight="700">
+              <text x="210" y="45">LAYER 01 · BLADE</text>
+              <text x="210" y="73">LAYER 02 · OPENERS</text>
+              <text x="210" y="101">LAYER 03 · SCISSORS</text>
+            </g>
+            <g font-size="9.5" font-weight="700" fill="#fff" stroke="#000" stroke-width="1.6">
+              <rect x="38" y="52" width="76" height="16" fill="#7a1f14"/><text x="44" y="63.5" stroke="none">🍾 CORKSCREW</text>
+              <rect x="38" y="80" width="92" height="16" fill="#4a5560"/><text x="44" y="91.5" stroke="none">🪡 REAMER/AWL</text>
+              <rect x="38" y="108" width="122" height="16" fill="#6e2a1e"/><text x="44" y="119.5" stroke="none">🪝 MULTIPURPOSE…</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+      <div id="stackStats">
+        <span class="stat"><span class="k">Thickness</span><span class="v">17.2</span><span class="u">mm</span></span>
+        <span class="stat"><span class="k">Weight</span><span class="v">84.1</span><span class="u">g</span></span>
+        <span class="stat"><span class="k">Layers</span><span class="v">3</span><span class="u">/ 6 tools</span></span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="panel">
+      <h2>// Stackup</h2>
+      <div class="toolbar">
+        <button>Load model…</button><button>Export</button><button>Import</button><button>Clear</button>
+      </div>
+      <div class="layer-row"><span class="lbl">Blade layer</span><span class="chip" style="background:#8a2a1e">🔪 Blade ×2</span><span class="chip" style="background:#7a1f14">🍾 Corkscrew</span><span class="ctl"><button>▲</button><button>▼</button><button>✕</button></span></div>
+      <div class="layer-row"><span class="lbl">Openers layer</span><span class="chip" style="background:#1f4e79">🍺 Openers ×2</span><span class="chip" style="background:#4a5560">🪡 Reamer</span><span class="ctl"><button>▲</button><button>▼</button><button>✕</button></span></div>
+      <div class="layer-row"><span class="lbl">Scissors layer</span><span class="chip" style="background:#5b2d6e">✂️ Scissors</span><span class="chip" style="background:#6e2a1e">🪝 Hook</span><span class="ctl"><button>▲</button><button>▼</button><button>✕</button></span></div>
+    </div>
+    <div class="panel" style="margin-top:16px">
+      <h2>// Matching models</h2>
+      <div class="match exact"><span>★ Climber</span><span class="pct">100%</span></div>
+      <div class="match"><span>Voyager</span><span class="pct">89%</span></div>
+      <div class="match"><span>Explorer</span><span class="pct">89%</span></div>
+      <div class="match"><span>Super Tinker</span><span class="pct">78%</span></div>
+    </div>
+    <div class="panel" style="margin-top:16px">
+      <h2>// Shopping list</h2>
+      <div class="shop-item"><span>Spartan<span class="take">donor: blade + openers</span></span><span>€27</span></div>
+      <div class="shop-item"><span>Compact<span class="take">donor: scissors + hook</span></span><span>€47</span></div>
+      <div class="shop-total"><span>Total</span><span>€74</span></div>
+    </div>
+  </section>
+</main>
+<footer>Data: SAKwiki — 99 models · 36 tools · 44 layer configs · mockup « tactical »</footer>
+</body>
+</html>
