@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="blueprint">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Style proposal 5 — « 3D orbit » · 91mm SAK Builder</title>
+<style>
+html[data-theme="blueprint"] {
+  --bgc:#0b1626; --panel:rgba(15,29,51,.75); --line:rgba(110,180,255,.22);
+  --ink:#dceaff; --dim:#6f9cc9; --accent:#6ec1ff; --sel:rgba(110,180,255,.14);
+  --head:"Segoe UI",system-ui,sans-serif; --mono:"Cascadia Mono",Consolas,Menlo,monospace;
+  --scenebg:
+    linear-gradient(rgba(110,180,255,.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(110,180,255,.05) 1px, transparent 1px),
+    linear-gradient(rgba(110,180,255,.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(110,180,255,.1) 1px, transparent 1px);
+  --scenesize:24px 24px, 24px 24px, 120px 120px, 120px 120px;
+  --banner-bg:#060d18; --banner-ink:#9fd0ff;
+}
+html[data-theme="tactical"] {
+  --bgc:#14161a; --panel:#1b1e24; --line:#343a43;
+  --ink:#e8e6df; --dim:#8b9099; --accent:#f5a623; --sel:#2a2418;
+  --head:"Arial Narrow",Impact,"Segoe UI",sans-serif; --mono:"Cascadia Mono",Consolas,monospace;
+  --scenebg:repeating-linear-gradient(45deg, rgba(255,255,255,.02) 0 2px, transparent 2px 9px);
+  --scenesize:auto;
+  --banner-bg:#0c0d10; --banner-ink:#f5a623;
+}
+* { box-sizing:border-box; }
+body { margin:0; background:var(--bgc); color:var(--ink); font:14px/1.5 var(--head); min-height:100vh; }
+.mock-banner { background:var(--banner-bg); color:var(--banner-ink); font:700 12px var(--mono); text-align:center; padding:6px 10px; letter-spacing:1px; }
+.mock-banner a { color:var(--accent); }
+header { display:flex; align-items:center; gap:14px; padding:12px 22px; background:var(--panel); border-bottom:1px solid var(--line); }
+.logo { width:36px; height:36px; border:1px solid var(--accent); color:var(--accent); display:flex; align-items:center; justify-content:center; font-size:17px; border-radius:4px; }
+html[data-theme="tactical"] .logo { border-radius:2px; box-shadow:3px 3px 0 #000; background:#7a1f14; color:#fff; border-color:#000; }
+header h1 { font:800 18px var(--head); margin:0; letter-spacing:1.5px; text-transform:uppercase; }
+header .sub { font:11px var(--mono); color:var(--dim); }
+header .spacer { margin-left:auto; }
+.tbtn { padding:6px 12px; border:1px solid var(--line); background:transparent; color:var(--dim); font:700 11px var(--mono); letter-spacing:1px; cursor:pointer; border-radius:3px; margin-left:6px; }
+.tbtn.on { color:var(--accent); border-color:var(--accent); background:var(--sel); }
+main { display:grid; grid-template-columns:270px minmax(0,1fr) 300px; gap:16px; padding:18px; max-width:1440px; margin:0 auto; }
+.panel { background:var(--panel); border:1px solid var(--line); border-radius:6px; }
+html[data-theme="tactical"] .panel { border-radius:4px; box-shadow:5px 5px 0 #000; }
+.panel h2 { font:800 11px var(--head); text-transform:uppercase; letter-spacing:2px; color:var(--accent); margin:0; padding:12px 14px 9px; border-bottom:1px dashed var(--line); }
+html[data-theme="tactical"] .panel h2 { border-bottom:1px solid var(--line); }
+.search { padding:10px 14px; }
+.search input { width:100%; padding:8px 12px; border:1px solid var(--line); border-radius:4px; font:12.5px var(--mono); background:rgba(0,0,0,.25); color:var(--ink); outline:none; }
+.tool-item { display:flex; align-items:center; gap:10px; padding:8px 14px; cursor:pointer; border-left:2px solid transparent; }
+.tool-item:hover { background:var(--sel); }
+.tool-item.selected { background:var(--sel); border-left-color:var(--accent); }
+.tool-ico { width:30px; height:30px; border-radius:4px; flex:none; display:flex; align-items:center; justify-content:center; font-size:15px; color:var(--accent); border:1px solid var(--line); background:rgba(0,0,0,.25); }
+.tool-name { font:600 12.5px var(--mono); }
+.tool-meta { font:10.5px var(--mono); color:var(--dim); }
+
+/* ---------- 3D scene ---------- */
+#scene {
+  position:relative; height:430px; margin:14px; border:1px dashed var(--line); border-radius:4px;
+  perspective:1100px; overflow:hidden; cursor:grab; touch-action:none;
+  background-color:transparent; background-image:var(--scenebg); background-size:var(--scenesize);
+}
+#scene.dragging { cursor:grabbing; }
+.floor {
+  position:absolute; left:50%; top:76%; width:400px; height:64px; transform:translate(-50%,-50%);
+  background:radial-gradient(ellipse at center, rgba(0,0,0,.5), transparent 65%); filter:blur(6px);
+}
+.knife { position:absolute; left:50%; top:46%; width:0; height:0; transform-style:preserve-3d; }
+.box { position:absolute; left:0; top:0; transform-style:preserve-3d; }
+.face { position:absolute; left:50%; top:50%; backface-visibility:hidden; }
+.steel-front { background:linear-gradient(180deg,#eef0f2,#c9cad0 55%,#e0e1e5); border:1px solid #8f9097; border-radius:9px; }
+.steel-back  { background:linear-gradient(180deg,#a9aab1,#8b8c93 60%,#b5b6bc); border:1px solid #74757c; border-radius:9px; }
+.edge-top    { background:linear-gradient(180deg,#dcdde1,#b9bac0); border:1px solid #8f9097; }
+.edge-bottom { background:linear-gradient(180deg,#9fa0a7,#84858c); border:1px solid #6f7076; }
+.edge-side   { background:linear-gradient(180deg,#c4c5cb,#9d9ea5); border:1px solid #7c7d84; border-radius:7px; }
+.scale-top {
+  background:linear-gradient(135deg,#ef5a3a,#d43518 45%,#a82a10);
+  border:1px solid #7e1d0a; border-radius:16px;
+}
+.scale-bottom {
+  background:linear-gradient(135deg,#e14e2c,#b02c12 55%,#7e1d0a);
+  border:1px solid #6b1a08; border-radius:16px;
+}
+.scale-edge { background:linear-gradient(180deg,#c22f10,#8f1f08); border:1px solid #6b1a08; border-radius:7px; }
+.rivet {
+  position:absolute; width:7px; height:7px; border-radius:50%;
+  background:radial-gradient(circle at 35% 30%, #ffffff, #b9bac0 60%, #6f7076);
+  box-shadow:0 1px 1px rgba(0,0,0,.45);
+}
+.chips { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; gap:4px; }
+.chip3 { font:700 8.5px var(--mono); color:#fff; padding:2px 7px; border-radius:7px; border:1px solid rgba(0,0,0,.4); white-space:nowrap; box-shadow:inset 0 1px 0 rgba(255,255,255,.25); }
+.lbl3 { position:absolute; right:8px; top:50%; transform:translateY(-50%); font:700 6.5px var(--mono); letter-spacing:1.5px; color:rgba(255,255,255,.55); }
+.ring { position:absolute; left:0; top:0; width:20px; height:20px; border:4px solid #a7a8ae; border-radius:50%; box-shadow:inset 0 1px 2px rgba(255,255,255,.55), 0 2px 3px rgba(0,0,0,.45); }
+.controls { display:flex; align-items:center; gap:12px; flex-wrap:wrap; padding:0 14px 14px; font:11px var(--mono); color:var(--dim); }
+.controls input[type=range] { width:150px; accent-color:var(--accent); }
+.controls button { padding:5px 10px; border:1px solid var(--line); background:transparent; color:var(--dim); border-radius:3px; cursor:pointer; font:700 10.5px var(--mono); letter-spacing:1px; }
+.controls button:hover { color:var(--accent); border-color:var(--accent); }
+.controls label { display:flex; align-items:center; gap:5px; cursor:pointer; }
+.hint3d { margin-left:auto; font:10px var(--mono); color:var(--dim); opacity:.8; }
+#stackStats { display:flex; justify-content:center; gap:12px; padding:2px 0 14px; flex-wrap:wrap; }
+.stat { display:inline-flex; align-items:baseline; gap:6px; background:rgba(0,0,0,.25); border:1px solid var(--line); border-radius:4px; padding:7px 14px; }
+.stat .k { font:700 9.5px var(--mono); color:var(--dim); text-transform:uppercase; letter-spacing:1.5px; }
+.stat .v { font:800 18px var(--mono); color:var(--accent); font-variant-numeric:tabular-nums; }
+.stat .u { font:11px var(--mono); color:var(--dim); }
+
+/* ---------- right column ---------- */
+.toolbar { display:flex; gap:8px; padding:12px 14px 4px; flex-wrap:wrap; }
+.toolbar button { padding:6px 12px; border:1px solid var(--line); background:transparent; color:var(--ink); border-radius:4px; cursor:pointer; font:12px var(--mono); }
+.toolbar button:hover { border-color:var(--accent); color:var(--accent); }
+.layer-row { display:flex; align-items:center; gap:8px; padding:9px 14px; border-bottom:1px dashed var(--line); font-family:var(--mono); flex-wrap:wrap; }
+.layer-row:last-child { border-bottom:none; }
+.layer-row .lbl { font:600 12px var(--mono); width:110px; flex:none; }
+.chip { display:inline-flex; align-items:center; gap:5px; font:600 10.5px var(--mono); color:var(--accent); padding:3px 8px; border:1px solid var(--line); border-radius:3px; background:var(--sel); }
+.layer-row .ctl { margin-left:auto; display:flex; gap:4px; }
+.layer-row .ctl button { width:22px; height:22px; border-radius:3px; border:1px solid var(--line); background:transparent; color:var(--dim); font-size:10px; cursor:pointer; }
+.match { display:flex; justify-content:space-between; font:12.5px var(--mono); padding:7px 14px; }
+.match .pct { color:var(--dim); font-weight:700; }
+.match.exact { background:var(--sel); color:var(--accent); font-weight:700; }
+.shop-item { display:flex; justify-content:space-between; padding:8px 14px; font:12.5px var(--mono); border-bottom:1px dashed var(--line); }
+.shop-item .take { display:block; font-size:10.5px; color:var(--dim); }
+.shop-total { display:flex; justify-content:space-between; padding:10px 14px; font:700 14px var(--mono); color:var(--accent); }
+footer { text-align:center; color:var(--dim); font:10.5px var(--mono); padding:14px; }
+@media (max-width:1100px) { main { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<div class="mock-banner">// STYLE PROPOSAL 5 — "3D ORBIT" (CSS 3D pur, aucune librairie) — <a href="index.html">&lt;- galerie</a> · <a href="style-2-blueprint.html">blueprint 2D</a> · <a href="style-4-tactical.html">tactical 2D</a></div>
+<header>
+  <div class="logo">🔪</div>
+  <div>
+    <h1>91mm SAK Builder — 3D</h1>
+    <div class="sub">// custom 91mm stackup — drag to orbit, wheel to zoom, slider to explode</div>
+  </div>
+  <div class="spacer"></div>
+  <button class="tbtn on" id="thBlueprint">◧ BLUEPRINT</button>
+  <button class="tbtn" id="thTactical">⚙ TACTICAL</button>
+</header>
+<main>
+  <section class="panel">
+    <h2>tools.db</h2>
+    <div class="search"><input type="search" placeholder="grep tool… e.g. corkscrew" readonly></div>
+    <div>
+      <div class="tool-item selected"><div class="tool-ico">🔪</div><div><div class="tool-name">Large Blade</div><div class="tool-meta">front · blade</div></div></div>
+      <div class="tool-item"><div class="tool-ico">🍺</div><div><div class="tool-name">Cap-lifter</div><div class="tool-meta">front · opener</div></div></div>
+      <div class="tool-item"><div class="tool-ico">✂️</div><div><div class="tool-name">Scissors</div><div class="tool-meta">front · scissor</div></div></div>
+      <div class="tool-item"><div class="tool-ico">🍾</div><div><div class="tool-name">Corkscrew</div><div class="tool-meta">back · corkscrew</div></div></div>
+      <div class="tool-item"><div class="tool-ico">🪡</div><div><div class="tool-name">Reamer / Awl</div><div class="tool-meta">back · punch</div></div></div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>preview_3d — climber stack</h2>
+    <div id="scene">
+      <div class="floor"></div>
+      <div class="knife" id="knife"></div>
+    </div>
+    <div class="controls">
+      <span>EXPLODE</span>
+      <input type="range" id="explode" min="0" max="100" value="32">
+      <button id="resetView">↺ reset view</button>
+      <label><input type="checkbox" id="autoRot" checked> auto-rotate</label>
+      <span class="hint3d">drag = orbit · wheel = zoom · slider = separate layers</span>
+    </div>
+    <div id="stackStats">
+      <span class="stat"><span class="k">thickness</span><span class="v">17.2</span><span class="u">mm</span></span>
+      <span class="stat"><span class="k">weight</span><span class="v">84.1</span><span class="u">g</span></span>
+      <span class="stat"><span class="k">layers</span><span class="v">3</span><span class="u">/ 6 tools</span></span>
+    </div>
+  </section>
+
+  <section>
+    <div class="panel">
+      <h2>stackup.json</h2>
+      <div class="toolbar">
+        <button>load_model()</button><button>export()</button><button>import()</button><button>clear()</button>
+      </div>
+      <div class="layer-row"><span class="lbl">blade_layer</span><span class="chip">🔪 blade×2</span><span class="chip">🍾 corkscrew</span><span class="ctl"><button>▲</button><button>▼</button><button>✕</button></span></div>
+      <div class="layer-row"><span class="lbl">openers_layer</span><span class="chip">🍺 opener×2</span><span class="chip">🪡 reamer</span><span class="ctl"><button>▲</button><button>▼</button><button>✕</button></span></div>
+      <div class="layer-row"><span class="lbl">scissors_layer</span><span class="chip">✂️ scissors</span><span class="chip">🪝 hook</span><span class="ctl"><button>▲</button><button>▼</button><button>✕</button></span></div>
+    </div>
+    <div class="panel" style="margin-top:16px">
+      <h2>model_match — jaccard</h2>
+      <div class="match exact"><span>★ Climber</span><span class="pct">1.00</span></div>
+      <div class="match"><span>Voyager</span><span class="pct">0.89</span></div>
+      <div class="match"><span>Explorer</span><span class="pct">0.89</span></div>
+      <div class="match"><span>Super Tinker</span><span class="pct">0.78</span></div>
+    </div>
+    <div class="panel" style="margin-top:16px">
+      <h2>bom — shopping list</h2>
+      <div class="shop-item"><span>Spartan<span class="take">donor: blade + openers</span></span><span>€27</span></div>
+      <div class="shop-item"><span>Compact<span class="take">donor: scissors + hook</span></span><span>€47</span></div>
+      <div class="shop-total"><span>TOTAL</span><span>€74</span></div>
+    </div>
+  </section>
+</main>
+<footer>// data: sakwiki 91mm tables — style mockup "3D orbit" · pure CSS 3D (preserve-3d), zero dependencies, works from file://</footer>
+<script>
+"use strict";
+/* ---------- demo data (Climber stack, real specs) ---------- */
+const L = 340, D = 112;          // px: knife length (91mm) × width (30mm)
+const MM = 4;                    // px per mm
+const SCALE_H = 9;               // px per red scale
+const LAYERS = [
+  { kind:"scale", side:"top",    h:SCALE_H },
+  { kind:"tool", id:"blade",    label:"BLADE LAYER",    h:11.15*MM, color:"#c0392b",
+    front:["🔪 Large Blade","🔪 Small Blade"], back:["🍾 Corkscrew"] },
+  { kind:"tool", id:"openers",  label:"OPENERS LAYER",  h:2.86*MM,  color:"#2471a3",
+    front:["🍺 Cap-lifter","🥫 Can Opener"],   back:["🪡 Reamer / Awl"] },
+  { kind:"tool", id:"scissors", label:"SCISSORS LAYER", h:3.18*MM,  color:"#6c3483",
+    front:["✂️ Scissors"],                     back:["🪝 Multipurp. Hook"] },
+  { kind:"scale", side:"bottom", h:SCALE_H },
+];
+
+/* ---------- cuboid construction ---------- */
+function face(cls, fw, fh, tf, html) {
+  const d = document.createElement("div");
+  d.className = "face " + cls;
+  d.style.width = fw + "px"; d.style.height = fh + "px";
+  d.style.transform = "translate(-50%,-50%) " + tf;
+  if (html) d.innerHTML = html;
+  return d;
+}
+function box(w, h, d, faces) {
+  const b = document.createElement("div");
+  b.className = "box";
+  b.style.width = w + "px"; b.style.height = h + "px";
+  faces.forEach(f => b.appendChild(f));
+  b.dataset.h = h;
+  return b;
+}
+const chipsHtml = (arr, color, label, h) =>
+  `<div class="chips">` + arr.map(t => `<span class="chip3" style="background:${color}">${t}</span>`).join("") + `</div>` +
+  (h >= 20 ? `<span class="lbl3">${label}</span>` : "");
+const rivetsHtml = `<i class="rivet" style="left:9px;top:9px"></i><i class="rivet" style="right:9px;top:9px"></i>
+  <i class="rivet" style="left:9px;bottom:9px"></i><i class="rivet" style="right:9px;bottom:9px"></i>`;
+const emblemHtml = `<svg width="34" height="13" viewBox="0 0 34 13" style="position:absolute;left:18px;top:50%;transform:translateY(-50%)">
+  <rect width="34" height="13" rx="2.5" fill="#fff" opacity=".95"/>
+  <rect x="14.8" y="1.5" width="4.4" height="10" fill="#d43518"/>
+  <rect x="12" y="4.3" width="10" height="4.4" fill="#d43518"/></svg>`;
+
+function buildKnife() {
+  const knife = document.getElementById("knife");
+  knife.innerHTML = "";
+  const boxes = [];
+  for (const ly of LAYERS) {
+    const h = ly.h, faces = [];
+    if (ly.kind === "scale") {
+      const big = ly.side === "top"
+        ? face("scale-top", L, D, `rotateX(90deg) translateZ(${h/2}px)`, emblemHtml + rivetsHtml)
+        : face("scale-bottom", L, D, `rotateX(-90deg) translateZ(${h/2}px)`, rivetsHtml);
+      faces.push(
+        big,
+        face("scale-edge", L, h, `translateZ(${D/2}px)`),
+        face("scale-edge", L, h, `rotateY(180deg) translateZ(${D/2}px)`),
+        face("scale-edge", D, h, `rotateY(90deg) translateZ(${L/2}px)`),
+        face("scale-edge", D, h, `rotateY(-90deg) translateZ(${L/2}px)`),
+        ly.side === "top"
+          ? face("edge-bottom", L, D, `rotateX(-90deg) translateZ(${h/2}px)`)
+          : face("edge-top", L, D, `rotateX(90deg) translateZ(${h/2}px)`)
+      );
+    } else {
+      faces.push(
+        face("steel-front", L, h, `translateZ(${D/2}px)`, chipsHtml(ly.front, ly.color, ly.label, h)),
+        face("steel-back",  L, h, `rotateY(180deg) translateZ(${D/2}px)`, chipsHtml(ly.back, ly.color, ly.label, h)),
+        face("edge-top",    L, D, `rotateX(90deg) translateZ(${h/2}px)`),
+        face("edge-bottom", L, D, `rotateX(-90deg) translateZ(${h/2}px)`),
+        face("edge-side",   D, h, `rotateY(90deg) translateZ(${L/2}px)`),
+        face("edge-side",   D, h, `rotateY(-90deg) translateZ(${L/2}px)`)
+      );
+    }
+    const b = box(L, h, D, faces);
+    knife.appendChild(b);
+    boxes.push(b);
+  }
+  const ring = document.createElement("div");
+  ring.className = "ring";
+  knife.appendChild(ring);
+  return { boxes, ring };
+}
+
+function layout(gap) {
+  const { boxes, ring } = state;
+  const hs = boxes.map(b => +b.dataset.h);
+  const total = hs.reduce((a, b) => a + b, 0) + gap * (boxes.length - 1);
+  let y = -total / 2;
+  boxes.forEach((b, i) => {
+    const cy = y + hs[i] / 2;
+    b.style.transform = `translate(-50%,-50%) translate3d(0,${cy}px,0)`;
+    y += hs[i] + gap;
+  });
+  ring.style.transform = `translate(-50%,-50%) translate3d(${-L/2 - 14}px, ${total/2 - SCALE_H/2}px, 0)`;
+}
+
+/* ---------- orbit / zoom ---------- */
+const scene = document.getElementById("scene");
+const knife = document.getElementById("knife");
+const state = buildKnife();
+let rx = -16, ry = 34, zoom = 0.95, auto = true, dragging = false, lx = 0, ly = 0;
+function apply() { knife.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg) scale(${zoom})`; }
+scene.addEventListener("pointerdown", e => {
+  dragging = true; lx = e.clientX; ly = e.clientY;
+  scene.classList.add("dragging");
+  scene.setPointerCapture(e.pointerId);
+});
+scene.addEventListener("pointermove", e => {
+  if (!dragging) return;
+  ry += (e.clientX - lx) * 0.45;
+  rx = Math.max(-80, Math.min(80, rx - (e.clientY - ly) * 0.35));
+  lx = e.clientX; ly = e.clientY;
+});
+const endDrag = () => { dragging = false; scene.classList.remove("dragging"); };
+scene.addEventListener("pointerup", endDrag);
+scene.addEventListener("pointercancel", endDrag);
+scene.addEventListener("wheel", e => {
+  e.preventDefault();
+  zoom = Math.max(0.55, Math.min(1.7, zoom * (e.deltaY < 0 ? 1.08 : 0.92)));
+}, { passive: false });
+function raf() {
+  if (auto && !dragging) ry += 0.12;
+  apply();
+  requestAnimationFrame(raf);
+}
+
+document.getElementById("explode").addEventListener("input", e => layout(e.target.value / 100 * 26));
+document.getElementById("autoRot").addEventListener("change", e => { auto = e.target.checked; });
+document.getElementById("resetView").addEventListener("click", () => {
+  rx = -16; ry = 34; zoom = 0.95;
+  document.getElementById("explode").value = 32;
+  layout(32 / 100 * 26);
+});
+const setTheme = t => {
+  document.documentElement.dataset.theme = t;
+  document.getElementById("thBlueprint").classList.toggle("on", t === "blueprint");
+  document.getElementById("thTactical").classList.toggle("on", t === "tactical");
+};
+document.getElementById("thBlueprint").addEventListener("click", () => setTheme("blueprint"));
+document.getElementById("thTactical").addEventListener("click", () => setTheme("tactical"));
+
+layout(32 / 100 * 26);
+raf();
+</script>
+</body>
+</html>
